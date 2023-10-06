@@ -1,0 +1,210 @@
+{% extends 'dashboard_base.html' %}
+{% load static %}
+
+{% block content %}
+
+    <div class="page-content">
+        <div class="container-fluid">
+            {% include 'base_message.html' %}
+            <!-- start page title -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                        <h4 class="mb-sm-0">Dashboard</h4>
+
+                        <div class="page-title-right">
+                            <ol class="breadcrumb m-0">
+                                <li class="breadcrumb-item"><a href="javascript: void(0);">Dashboard</a></li>
+                                <li class="breadcrumb-item active">Dashboard</li>
+                            </ol>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <!-- end page title -->
+            <div class="row">
+                <div class="col-xl-12">
+                    <div class="card dash-mini">
+                        <div class="card-header border-0 align-items-center d-flex">
+                            <h4 class="card-title mb-0 flex-grow-1">{% if time_interval == 'weekly' %}Last
+                                Week's{% elif time_interval == 'monthly' %}Last
+                                Month's{% elif time_interval == 'yearly' %}Last Year's{% else %}This{% endif %}
+                                Overview</h4>
+                            <div class="flex-shrink-0">
+                                <div class="dropdown card-header-dropdown">
+                                    <a class="text-reset" href="#" data-bs-toggle="dropdown"
+                                       aria-haspopup="true" aria-expanded="false">
+                                        <span class="fw-semibold text-uppercase fs-14">Sort by: </span><span
+                                            class="text-muted">{% if time_interval == 'weekly' %}Last
+                                        Week{% elif time_interval == 'monthly' %}Last
+                                        Month{% elif time_interval == 'yearly' %}Last Year{% else %}Today{% endif %}<i
+                                            class="las la-angle-down fs-12 ms-2"></i></span>
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-end">
+                                        <a class="dropdown-item" href="{% url 'pos:dashboard' %}">Today</a>
+                                        <a class="dropdown-item"
+                                           href="{% url 'pos:dashboard' %}?time_interval=weekly">Last Week</a>
+                                        <a class="dropdown-item"
+                                           href="{% url 'pos:dashboard' %}?time_interval=monthly">Last Month</a>
+                                        <a class="dropdown-item"
+                                           href="{% url 'pos:dashboard' %}?time_interval=yearly">Current Year</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!-- end card header -->
+
+                        <div class="card-body pt-1">
+                            <div class="row">
+                                <div class="col-lg-6 mini-widget pb-3 pb-lg-0">
+                                    <div class="d-flex align-items-end">
+                                        <div class="flex-grow-1">
+                                            <h2 class="mb-0 fs-24"><span class="counter-value"
+                                                                         data-target="{{ todays_sales_count }}">{{ todays_sales_count }}</span>
+                                            </h2>
+                                            <h5 class="text-muted fs-16 mt-2 mb-0">Total Sales Count</h5>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6 mini-widget py-3 py-lg-0">
+                                    <div class="d-flex align-items-end">
+                                        <div class="flex-grow-1">
+                                            <h2 class="mb-0 fs-24"><i class="las la-dollar-sign"></i><span
+                                                    class="counter-value"
+                                                    data-target="{{ todays_sales_amount }}">{{ todays_sales_amount }}</span>
+                                            </h2>
+                                            <h5 class="text-muted fs-16 mt-2 mb-0">Total Sales Amount</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- end row -->
+            <div class="row">
+                <div class="col-xl-12">
+                    <div class="card dash-mini">
+                        <div class="card-header border-0 align-items-center d-flex">
+                            <h4 class="card-title mb-0 flex-grow-1">Total Overview</h4>
+                        </div><!-- end card header -->
+
+                        <div class="card-body pt-1">
+                            <div class="row">
+                                <div class="col-lg-3 mini-widget pb-3 pb-lg-0">
+                                    <a href="{% url 'pos:category-list' %}">
+                                        <div class="d-flex align-items-end">
+                                            <div class="flex-grow-1">
+                                                <h2 class="mb-0 fs-24">
+                                                            <span class="counter-value"
+                                                                  data-target="{{ total_categories }}">{{ total_categories }}</span>
+                                                </h2>
+                                                <h5 class="text-muted fs-16 mt-2 mb-0">Categories Added</h5>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+
+                                <div class="col-lg-3 mini-widget py-3 py-lg-0">
+                                    <a href="{% url 'pos:product-list' %}">
+                                        <div class="d-flex align-items-end">
+                                            <div class="flex-grow-1">
+                                                <h2 class="mb-0 fs-24">
+                                                            <span class="counter-value"
+                                                                  data-target="{{ total_products }}">{{ total_products }}</span>
+                                                </h2>
+                                                <h5 class="text-muted fs-16 mt-2 mb-0">Products Added</h5>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+
+                                <div class="col-lg-3 mini-widget pt-3 pt-lg-0 nav-item">
+                                    <a href="{% url 'pos:stock-list' %}">
+                                        <div class="d-flex align-items-end">
+                                            <div class="flex-grow-1">
+                                                <h2 class="mb-0 fs-24">
+                                                            <span class="counter-value"
+                                                                  data-target="{{ total_stock }}">{{ total_stock }}</span>
+                                                </h2>
+                                                <h5 class="text-muted fs-16 mt-2 mb-0">Stocks Added</h5>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="col-lg-3 mini-widget pt-3 pt-lg-0">
+                                    <a href="{% url 'pos:category-list' %}">
+                                        <div class="d-flex align-items-end">
+                                            <div class="flex-grow-1">
+                                                <h2 class="mb-0 fs-24">
+                                                            <span class="counter-value"
+                                                                  data-target="{{ total_users }}">{{ total_users }}</span>
+                                                </h2>
+                                                <h5 class="text-muted fs-16 mt-2 mb-0">Users Added</h5>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div><!-- end col -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- end row -->
+            <div class="row">
+                <div class="col-xl-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex align-items-start mb-1">
+                                <div class="flex-grow-1">
+                                    <h5 class="card-title">Recent Stock Transaction</h5>
+                                </div>
+                            </div>
+
+                            <div class="mx-n3 px-3" data-simplebar style="max-height: 418px;">
+                                <p class="text-muted mb-0">Recent</p>
+                                {% for recent_transaction in recent_transactions %}
+                                    <div class="border-bottom sales-history">
+                                        <div class="d-flex align-items-center">
+                                            <div class="avatar-sm flex-shrink-0">
+                                                        <span class="avatar-title bg-primary rounded-circle fs-3">
+                                                            <i class="las la-dolly fs-22"></i>
+                                                        </span>
+                                            </div>
+                                            <div class="flex-grow-1 ms-3 overflow-hidden" style="max-width: 400px;">
+                                                <h5 class="fs-15 mb-1 text-truncate">{{ recent_transaction.product.name|truncatechars:80 }}</h5>
+                                                <p class="fs-14 text-muted text-truncate mb-0">{{ recent_transaction.date }}</p>
+                                            </div>
+                                            <div class="flex-grow-1 ms-3 overflow-hidden" style="max-width: 400px;">
+                                                <h4 class="fs-15 mb-1 text-truncate">
+                                                    {% if recent_transaction.transaction_type == 'OUT' %}Stock
+                                                        Out{% elif recent_transaction.transaction_type == 'IN' %}Stock
+                                                        In{% else %}Return{% endif %}</h4>
+                                            </div>
+                                            <div class="flex-shrink-0">
+                                                {% if recent_transaction.transaction_type == 'OUT' %}
+                                                    <span class="badge fs-12 bg-danger-subtle text-danger">- {{ recent_transaction.quantity }}</span>
+                                                {% elif recent_transaction.transaction_type == 'IN' %}
+                                                    <span class="badge fs-12 bg-success-subtle text-success">+ {{ recent_transaction.quantity }}</span>
+                                                {% else %}
+                                                    <span class="badge fs-12 bg-danger-subtle text-danger">- {{ recent_transaction.quantity }}</span>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% empty %}
+                                    <p class="text-muted mb-0 text-center">No data found.</p>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- end row -->
+        </div>
+        <!-- container-fluid -->
+    </div>
+
+{% endblock %}

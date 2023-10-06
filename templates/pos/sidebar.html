@@ -1,0 +1,90 @@
+<!-- ========== App Menu ========== -->
+{% load static %}
+<div class="app-menu navbar-menu">
+    <!-- LOGO -->
+    <div class="navbar-brand-box">
+        <!-- Dark Logo-->
+        <a href="/" class="logo logo-dark">
+                        <span class="logo-sm">
+                            <img src="{% static 'assets/images/logo-sm.png' %}" alt="" height="22">
+                        </span>
+            <span class="logo-lg">
+                            <img src="{% static 'assets/images/logo-dark.png' %}" alt="" height="21">
+                        </span>
+        </a>
+
+        <a href="/" class="logo logo-light">
+                        <span class="logo-sm">
+                            <img src="{% static 'assets/images/logo-sm.png' %}" alt="" height="22">
+                        </span>
+            <span class="logo-lg">
+                            <img src="{% static 'assets/images/logo-light.png' %}" alt="" height="21">
+                        </span>
+        </a>
+        <button type="button" class="btn btn-sm p-0 fs-20 header-item float-end btn-vertical-sm-hover"
+                id="vertical-hover">
+            <i class="ri-record-circle-line"></i>
+        </button>
+    </div>
+
+    <div id="scrollbar">
+        <div class="container-fluid">
+
+            <div id="two-column-menu">
+            </div>
+            <ul class="navbar-nav" id="navbar-nav">
+                <li class="menu-title"><span data-key="t-menu">Menu</span></li>
+                <li class="nav-item">
+                    <a class="nav-link menu-link" href="{% url 'pos:dashboard' %}">
+                        <i class="las la-house-damage"></i> <span data-key="t-dashboard">Dashboard</span>
+                    </a>
+                </li>
+
+                <li class="menu-title"><i class="ri-more-fill"></i> <span
+                        data-key="t-components">Pages</span></li>
+                <li class="nav-item">
+                    <a class="nav-link menu-link" href="{% url 'pos:product-list' %}" role="button"
+                       aria-expanded="false" aria-controls="sidebarTables">
+                        <i class="las la-boxes"></i> <span data-key="t-tables">Product List</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link menu-link" href="{% url 'pos:category-list' %}" role="button"
+                       aria-expanded="false" aria-controls="sidebarTables">
+                        <i class="las la-list"></i> <span data-key="t-tables">Category List</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link menu-link" href="#sidebarTables" role="button"
+                       aria-expanded="false" aria-controls="sidebarTables">
+                        <i class="las la-book"></i> <span data-key="t-tables">POS</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link menu-link" href="#sidebarTables" role="button"
+                       aria-expanded="false" aria-controls="sidebarTables">
+                        <i class=" las la-money-bill"></i> <span data-key="t-tables">Sales</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link menu-link" href="{% url 'pos:stock-list' %}" role="button"
+                       aria-expanded="false" aria-controls="sidebarTables">
+                        <i class=" las la-dolly"></i> <span data-key="t-tables">Stock</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link menu-link" href="{% url 'pos:user-list' %}" role="button"
+                       aria-expanded="false" aria-controls="sidebarTables">
+                        <i class="las la-user-tie"></i> <span data-key="t-tables">User</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <!-- Sidebar -->
+    </div>
+
+    <div class="sidebar-background"></div>
+</div>
+<!-- Left Sidebar End -->
+<!-- Vertical Overlay-->
+<div class="vertical-overlay"></div>

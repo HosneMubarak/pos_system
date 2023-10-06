@@ -1,0 +1,121 @@
+{% extends 'dashboard_base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="page-content">
+        <div class="container-fluid">
+            <!-- start page title -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                        <h4 class="mb-sm-0">Category List</h4>
+
+                        <div class="page-title-right">
+                            <ol class="breadcrumb m-0">
+                                <li class="breadcrumb-item"><a href="{% url 'pos:dashboard' %}">Dashboard</a></li>
+                                <li class="breadcrumb-item active">Category List</li>
+                            </ol>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <!-- end page title -->
+
+            <div class="row pb-4 gy-3">
+                <div class="col-sm-4">
+                    <a href="{% url 'pos:category_add' %}" class="btn btn-primary" ><i
+                            class="las la-plus me-1"></i> Add Category
+                    </a>
+                </div>
+
+                <div class="col-sm-auto ms-auto">
+                    <div class="d-flex gap-3">
+                        <div class="search-box">
+                            <input type="text" class="form-control" id="searchMemberList"
+                                   placeholder="Search for Result">
+                            <i class="las la-search search-icon"></i>
+                        </div>
+                        <div class="">
+                            <button type="button"
+                                    class="btn btn-soft-info">Search
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-xl-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="table-responsive table-card">
+                                <table class="table table-hover table-nowrap align-middle mb-0">
+                                    <thead>
+                                    <tr class="text-muted text-uppercase">
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Description:</th>
+                                        <th scope="col">Status</th>
+                                        <th scope="col" style="width: 16%;">Date added</th>
+                                        <th></th>
+                                    </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    {% for category in page %}
+                                        <tr>
+                                            <td>{{ category.name }}</td>
+                                            <td>{{ category.description }}</td>
+                                            <td><span
+                                                    class="badge bg-success-subtle {% if category.status == 1 %}text-success{% else %}text-danger{% endif %} p-2">{% if category.status == 1 %}
+                                                Active{% else %}Inactive{% endif %}</span></td>
+                                            <td>{{ category.date_added }}</td>
+                                        </tr>
+                                    {% empty %}
+                                        <tr>
+                                            <td colspan="5">No categories found.</td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody><!-- end tbody -->
+                                </table><!-- end table -->
+                            </div><!-- end table responsive -->
+                        </div>
+                    </div>
+
+                    <div class="row align-items-center mb-2 gy-3">
+                        <div class="col-md-5">
+                            <p class="mb-0 text-muted">Showing <b>{{ page.start_index }}</b> to
+                                <b>{{ page.end_index }}</b> of <b>{{ page.paginator.count }}</b> results</p>
+                        </div>
+                        <div class="col-sm-auto ms-auto">
+                            <nav aria-label="...">
+                                <ul class="pagination mb-0">
+                                    {% if page.has_previous %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page=1">First</a>
+                                        </li>
+                                        <li class="page-item">
+                                            <a class="page-link"
+                                               href="?page={{ page.previous_page_number }}">Previous</a>
+                                        </li>
+                                    {% endif %}
+                                    {% if page.has_next %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page={{ page.next_page_number }}">Next</a>
+                                        </li>
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page={{ page.paginator.num_pages }}">Last</a>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- container-fluid -->
+    </div>
+{% endblock %}
+
+
