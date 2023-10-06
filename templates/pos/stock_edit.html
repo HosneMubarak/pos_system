@@ -1,0 +1,150 @@
+{% extends 'dashboard_base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="page-content">
+        <div class="container-fluid">
+            {% include 'base_message.html' %}
+            <!-- start page title -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                        <h4 class="mb-sm-0">Edit Stock Transaction</h4>
+
+                        <div class="page-title-right">
+                            <ol class="breadcrumb m-0">
+                                <li class="breadcrumb-item"><a href="{% url 'pos:stock-list' %}">Stock Transactions</a>
+                                </li>
+                                <li class="breadcrumb-item active">Edit Stock Transaction</li>
+                            </ol>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <!-- end page title -->
+
+
+            <div class="row">
+                <div class="col-xl-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="p-2">
+                                <form method="post">
+                                    {% csrf_token %}
+
+                                    <!-- Display non-field specific errors -->
+                                    {% if form.non_field_errors %}
+                                        <div class="alert alert-danger">
+                                            {% for error in form.non_field_errors %}
+                                                <p>{{ error }}</p>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label"
+                                                       for="{{ form.product.id_for_label }}">Product</label>
+                                                <select class="form-select" name="{{ form.product.name }}"
+                                                        id="{{ form.product.id_for_label }}">
+                                                    {% for product in products %}
+                                                        <option value="{{ product.id }}"
+                                                                {% if form.product.value == product.id %}selected{% endif %}>{{ product.name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                                <!-- Display field-specific errors -->
+                                                {% if form.product.errors %}
+                                                    <div class="text-danger">
+                                                        {% for error in form.product.errors %}
+                                                            <p>{{ error }}</p>
+                                                        {% endfor %}
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="{{ form.transaction_type.id_for_label }}"
+                                                       class="form-label">Transaction Type</label>
+                                                <select class="form-select" data-trigger
+                                                        name="{{ form.transaction_type.name }}"
+                                                        id="{{ form.transaction_type.id_for_label }}">
+                                                    <option value="IN"
+                                                            {% if form.transaction_type.value == "IN" %}selected{% endif %}>
+                                                        Stock In
+                                                    </option>
+                                                    <option value="OUT"
+                                                            {% if form.transaction_type.value == "OUT" %}selected{% endif %}>
+                                                        Stock Out
+                                                    </option>
+                                                    <option value="RETURN"
+                                                            {% if form.transaction_type.value == "RETURN" %}selected{% endif %}>
+                                                        Return
+                                                    </option>
+                                                </select>
+                                                <!-- Display field-specific errors -->
+                                                {% if form.transaction_type.errors %}
+                                                    <div class="text-danger">
+                                                        {% for error in form.transaction_type.errors %}
+                                                            <p>{{ error }}</p>
+                                                        {% endfor %}
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label" for="{{ form.quantity.id_for_label }}">Quantity</label>
+                                                <input id="{{ form.quantity.id_for_label }}"
+                                                       name="{{ form.quantity.name }}"
+                                                       placeholder="Enter Quantity" type="number" class="form-control"
+                                                       value="{{ form.quantity.value|default:'' }}">
+                                                <!-- Display field-specific errors -->
+                                                {% if form.quantity.errors %}
+                                                    <div class="text-danger">
+                                                        {% for error in form.quantity.errors %}
+                                                            <p>{{ error }}</p>
+                                                        {% endfor %}
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label" for="{{ form.note.id_for_label }}">Note
+                                            (Optional)</label>
+                                        <textarea class="form-control" id="{{ form.note.id_for_label }}"
+                                                  name="{{ form.note.name }}" placeholder="Enter Note"
+                                                  rows="3">{{ form.note.value|default:'' }}</textarea>
+                                        <!-- Display field-specific errors -->
+                                        {% if form.note.errors %}
+                                            <div class="text-danger">
+                                                {% for error in form.note.errors %}
+                                                    <p>{{ error }}</p>
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="hstack gap-2 mt-4">
+                                        <button type="submit" class="btn btn-primary">Save</button>
+                                        <a href="{% url 'pos:stock-list' %}" class="btn btn-light">Discard</a>
+                                    </div>
+
+                                </form>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- container-fluid -->
+    </div>
+{% endblock %}

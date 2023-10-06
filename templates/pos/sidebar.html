@@ -4,22 +4,12 @@
     <!-- LOGO -->
     <div class="navbar-brand-box">
         <!-- Dark Logo-->
-        <a href="/" class="logo logo-dark">
-                        <span class="logo-sm">
-                            <img src="{% static 'assets/images/logo-sm.png' %}" alt="" height="22">
-                        </span>
+        <a href="/">
             <span class="logo-lg">
-                            <img src="{% static 'assets/images/logo-dark.png' %}" alt="" height="21">
-                        </span>
-        </a>
-
-        <a href="/" class="logo logo-light">
-                        <span class="logo-sm">
-                            <img src="{% static 'assets/images/logo-sm.png' %}" alt="" height="22">
-                        </span>
-            <span class="logo-lg">
-                            <img src="{% static 'assets/images/logo-light.png' %}" alt="" height="21">
-                        </span>
+                <img class="mt-3" src="{% static 'assets/images/logo-sm.png' %}" alt=""
+                     height="22">
+                <h5 class="text-center mt-2 text-uppercase fw-bolder">POS System</h5>
+            </span>
         </a>
         <button type="button" class="btn btn-sm p-0 fs-20 header-item float-end btn-vertical-sm-hover"
                 id="vertical-hover">
@@ -61,9 +51,9 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link menu-link" href="#sidebarTables" role="button"
+                    <a class="nav-link menu-link" href="{% url 'pos:sale-item-list' %}" role="button"
                        aria-expanded="false" aria-controls="sidebarTables">
-                        <i class=" las la-money-bill"></i> <span data-key="t-tables">Sales</span>
+                        <i class=" las la-money-bill"></i> <span data-key="t-tables">Sale</span>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -73,7 +63,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link menu-link" href="{% url 'pos:user-list' %}" role="button"
+                    <a class="nav-link menu-link" href="{% url 'account:user-list' %}" role="button"
                        aria-expanded="false" aria-controls="sidebarTables">
                         <i class="las la-user-tie"></i> <span data-key="t-tables">User</span>
                     </a>

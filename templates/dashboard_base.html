@@ -6,10 +6,8 @@
 
 <head>
     <meta charset="utf-8"/>
-    <title>Dashboard | Invoika - Admin & Dashboard Template</title>
+    <title>Dashboard | POS System</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta content="Premium Multipurpose Admin & Dashboard Template" name="description"/>
-    <meta content="Themesbrand" name="author"/>
     <!-- App favicon -->
     <link rel="shortcut icon" href="{% static 'assets/images/favicon.ico' %}">
 
@@ -66,8 +64,13 @@
 </button>
 <!--end back-to-top-->
 
-
 <!-- JAVASCRIPT -->
+
+{% include 'modal/delete_modal.html' %}
+
+{% block extra_js %}
+{% endblock %}
+
 <script src="{% static 'assets/libs/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
 <script src="{% static 'assets/libs/simplebar/simplebar.min.js' %}"></script>
 <script src="{% static 'assets/libs/node-waves/waves.min.js' %}"></script>
@@ -86,6 +89,7 @@
 
 <!-- App js -->
 <script src="{% static 'assets/js/app.js' %}"></script>
+
 </body>
 
 </html>

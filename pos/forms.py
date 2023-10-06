@@ -1,10 +1,33 @@
-# forms.py
 from django import forms
 
-from .models import Category
+from .models import *
 
 
 class CategoryForm(forms.ModelForm):
     class Meta:
         model = Category
-        fields = ['name', 'description', 'status']  # List the fields you want to edit
+        fields = ['name', 'description', 'status']
+
+
+class ProductForm(forms.ModelForm):
+    class Meta:
+        model = Product
+        fields = ['code', 'category', 'name', 'description', 'stock', 'buy_price', 'sell_price', 'status']
+
+
+class SaleForm(forms.ModelForm):
+    class Meta:
+        model = Sale
+        fields = ['code', 'sub_total', 'grand_total', 'tax_amount', 'tax', 'tendered_amount', 'amount_change']
+
+
+class SaleItemForm(forms.ModelForm):
+    class Meta:
+        model = SaleItem
+        fields = ['sale', 'product', 'price', 'qty', 'total']
+
+
+class StockTransactionForm(forms.ModelForm):
+    class Meta:
+        model = StockTransaction
+        fields = ['product', 'transaction_type', 'quantity', 'note']

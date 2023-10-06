@@ -4,6 +4,7 @@
 {% block content %}
     <div class="page-content">
         <div class="container-fluid">
+            {% include 'base_message.html' %}
             <!-- start page title -->
             <div class="row">
                 <div class="col-12">
@@ -24,7 +25,7 @@
 
             <div class="row pb-4 gy-3">
                 <div class="col-sm-4">
-                    <a href="{% url 'pos:category_add' %}" class="btn btn-primary" ><i
+                    <a href="{% url 'pos:category-add' %}" class="btn btn-primary"><i
                             class="las la-plus me-1"></i> Add Category
                     </a>
                 </div>
@@ -54,10 +55,12 @@
                                     <thead>
                                     <tr class="text-muted text-uppercase">
                                         <th scope="col">Name</th>
-                                        <th scope="col">Description:</th>
+                                        <th scope="col">Created By</th>
+                                        <th scope="col">Date added</th>
+                                        <th scope="col">Updated By</th>
+                                        <th scope="col">Date Updated</th>
                                         <th scope="col">Status</th>
-                                        <th scope="col" style="width: 16%;">Date added</th>
-                                        <th></th>
+                                        <th scope="col">Action</th>
                                     </tr>
                                     </thead>
 
@@ -65,11 +68,40 @@
                                     {% for category in page %}
                                         <tr>
                                             <td>{{ category.name }}</td>
-                                            <td>{{ category.description }}</td>
+                                            <td>{{ category.created_by.username }}</td>
+                                            <td>{{ category.date_added }}</td>
+                                            <td>{{ category.updated_by.username }}</td>
+                                            <td>{{ category.date_updated }}</td>
                                             <td><span
                                                     class="badge bg-success-subtle {% if category.status == 1 %}text-success{% else %}text-danger{% endif %} p-2">{% if category.status == 1 %}
-                                                Active{% else %}Inactive{% endif %}</span></td>
-                                            <td>{{ category.date_added }}</td>
+                                                Active{% else %}Inactive{% endif %}</span>
+                                            </td>
+                                            <td>
+                                                <div class="dropdown">
+                                                    <button class="btn btn-soft-secondary btn-sm dropdown" type="button"
+                                                            data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <i class="las la-ellipsis-h align-middle fs-18"></i>
+                                                    </button>
+                                                    <ul class="dropdown-menu dropdown-menu-end">
+                                                        <li>
+                                                            <a class="dropdown-item"
+                                                               href="{% url 'pos:category-edit' category.id %}"><i
+                                                                    class="las la-pen fs-18 align-middle me-2 text-muted"></i>
+                                                                Edit
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="#" class="dropdown-item remove-item-btn delete-btn"
+                                                               data-id="{{ category.id }}"
+                                                               data-name="{{ category.name }}"
+                                                               data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                                                                <i class="las la-trash-alt fs-18 align-middle me-2 text-muted"></i>
+                                                                Delete
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </td>
                                         </tr>
                                     {% empty %}
                                         <tr>
@@ -117,5 +149,28 @@
         <!-- container-fluid -->
     </div>
 {% endblock %}
+
+{% block extra_js %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const deleteButtons = document.querySelectorAll('.delete-btn');
+            const dataNameElement = document.getElementById('name-to-delete');
+            const deleteForm = document.getElementById('delete-form');
+
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function (event) {
+                    const dataName = event.target.getAttribute('data-name');
+                    const dataId = event.target.getAttribute('data-id');
+
+                    dataNameElement.textContent = dataName;  // Populate modal with name
+
+                    // Update the form's action to point to the delete view
+                    deleteForm.action = `{% url 'pos:category-delete' category_id='0' %}`.replace('0', dataId);
+                });
+            });
+        });
+    </script>
+{% endblock %}
+
 
 

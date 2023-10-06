@@ -1,16 +1,19 @@
 from datetime import datetime, timedelta
 
-from django.contrib.auth import get_user_model
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Sum
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import render
 
-from .forms import CategoryForm
+from account.decorators import staff_user_required
+from .forms import *
 from .models import *
 
 
 @login_required
+@staff_user_required
 def dashboard_view(request):
     today = datetime.now().date()
 
@@ -45,8 +48,8 @@ def dashboard_view(request):
     ).aggregate(total_sales=Sum('grand_total'))['total_sales'] or 0
 
     recent_transactions = StockTransaction.objects.select_related('product').filter(
-        date__date__range=(start_date, end_date)
-    ).order_by('-date')[:5]  # last 5 transactions, with related Product data
+        date_added__date__range=(start_date, end_date)
+    ).order_by('-date_added')[:5]  # last 5 transactions, with related Product data
 
     context = {
         'total_categories': total_categories,
@@ -63,10 +66,10 @@ def dashboard_view(request):
 
 
 @login_required
+@staff_user_required
 def category_list_view(request):
     # Get all categories
-    categories = Category.objects.all()
-
+    categories = Category.objects.all().select_related('created_by', 'updated_by')
     # Number of categories to display per page
     per_page = 10  # Adjust the number as needed
 
@@ -83,12 +86,19 @@ def category_list_view(request):
 
 
 @login_required
+@staff_user_required
 def category_add_view(request):
     if request.method == 'POST':
         form = CategoryForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('category_list')  # Redirect to the category list view after adding
+            category = form.save(commit=False)
+            category.created_by = request.user
+            category.updated_by = request.user
+            category.save()
+            messages.success(request, 'Category successfully added.')
+            return redirect('pos:category-list')  # Redirect to the category list view after adding
+        else:
+            messages.error(request, 'There was an error adding the category.')
     else:
         form = CategoryForm()
 
@@ -96,14 +106,20 @@ def category_add_view(request):
 
 
 @login_required
+@staff_user_required
 def category_edit_view(request, category_id):
     category = get_object_or_404(Category, pk=category_id)
 
     if request.method == 'POST':
         form = CategoryForm(request.POST, instance=category)
         if form.is_valid():
-            form.save()
-            return redirect('category_list')  # Redirect to the category list view after editing
+            category = form.save(commit=False)
+            category.updated_by = request.user  # only updating 'updated_by' for edits
+            category.save()
+            messages.success(request, 'Category successfully updated.')
+            return redirect('pos:category-list')  # Redirect to the category list view after editing
+        else:
+            messages.error(request, 'There was an error updating the category.')
     else:
         form = CategoryForm(instance=category)
 
@@ -111,8 +127,28 @@ def category_edit_view(request, category_id):
 
 
 @login_required
+@staff_user_required
+def category_delete_view(request, category_id):
+    # Ensure only admin can delete
+    if not request.user.is_admin:
+        messages.error(request, "You don't have the permission to delete this category.")
+        return redirect('pos:category-list')  # Redirect back to the category list view
+
+    category = get_object_or_404(Category, pk=category_id)
+
+    if request.method == 'POST':
+        category.delete()
+        messages.success(request, 'Category successfully deleted.')
+        return redirect('pos:category-list')  # Redirect to the category list view after deletion
+
+    # Since we removed the confirmation page, if the method is not POST, redirect to the list view.
+    return redirect('pos:category-list')
+
+
+@login_required
+@staff_user_required
 def product_list_view(request):
-    products = Product.objects.all()
+    products = Product.objects.all().select_related('created_by', 'updated_by')
 
     # Number of categories to display per page
     per_page = 10  # Adjust the number as needed
@@ -130,27 +166,71 @@ def product_list_view(request):
 
 
 @login_required
-def user_list_view(request):
-    User = get_user_model()
-    users = User.objects.all()
+@staff_user_required
+def product_add_view(request):
+    categories = Category.objects.all()
+    if request.method == 'POST':
+        form = ProductForm(request.POST)
+        if form.is_valid():
+            product = form.save(commit=False)
+            product.created_by = request.user
+            product.updated_by = request.user
+            product.save()
+            messages.success(request, 'Product successfully added.')
+            return redirect('pos:product-list')  # Redirect to the product list view after adding
+        else:
+            messages.error(request, 'There was an error adding the product.')
+    else:
+        form = ProductForm()
 
-    # Number of categories to display per page
-    per_page = 10  # Adjust the number as needed
-
-    # Create a Paginator object
-    paginator = Paginator(users, per_page)
-
-    # Get the current page number from the request's GET parameters
-    page_number = request.GET.get('page')
-
-    # Get the Page object for the current page
-    page = paginator.get_page(page_number)
-    return render(request, 'pos/user_list.html', {'page': page})
+    return render(request, 'pos/product_add.html', {'form': form, 'categories': categories})
 
 
 @login_required
+@staff_user_required
+def product_edit_view(request, product_id):
+    product = get_object_or_404(Product, pk=product_id)
+    categories = Category.objects.all()
+    if request.method == 'POST':
+        form = ProductForm(request.POST, instance=product)
+        if form.is_valid():
+            product = form.save(commit=False)
+            product.updated_by = request.user  # only updating 'updated_by' for edits
+            product.save()
+            messages.success(request, 'Product successfully updated.')
+            return redirect('pos:product-list')  # Redirect to the product list view after editing
+        else:
+            messages.error(request, 'There was an error updating the product.')
+    else:
+        form = ProductForm(instance=product)
+
+    return render(request, 'pos/product_edit.html', {'form': form, 'product': product, 'categories': categories})
+
+
+@login_required
+@staff_user_required
+def product_delete_view(request, product_id):
+    # Ensure only admin can delete
+    if not request.user.is_admin:
+        messages.error(request, "You don't have the permission to delete this product.")
+        return redirect('pos:product-list')  # Redirect back to the product list view
+
+    product = get_object_or_404(Product, pk=product_id)
+
+    if request.method == 'POST':
+        product.delete()
+        messages.success(request, 'Product successfully deleted.')
+        return redirect('pos:product-list')  # Redirect to the product list view after deletion
+
+    # Since we removed the confirmation page, if the method is not POST, redirect to the list view.
+    return redirect('pos:product-list')
+
+
+@login_required
+@staff_user_required
 def stock_list_view(request):
-    stocks = StockTransaction.objects.all()
+    # Fetch related data for 'created_by', 'updated_by', and 'product' fields
+    stocks = StockTransaction.objects.all().select_related('created_by', 'updated_by', 'product')
 
     # Number of categories to display per page
     per_page = 10  # Adjust the number as needed
@@ -164,3 +244,118 @@ def stock_list_view(request):
     # Get the Page object for the current page
     page = paginator.get_page(page_number)
     return render(request, 'pos/stock_list.html', {'page': page})
+
+
+@login_required
+@staff_user_required
+def stock_detail_view(request, stock_id):
+    # Fetch the specific StockTransaction with related data
+    stock = get_object_or_404(StockTransaction.objects.select_related('created_by', 'updated_by', 'product'),
+                              pk=stock_id)
+
+    context = {
+        'stock': stock
+    }
+
+    return render(request, 'pos/stock_detail.html', context)
+
+
+@login_required
+@staff_user_required
+def stock_add_view(request):
+    products = Product.objects.all()
+
+    if request.method == 'POST':
+        form = StockTransactionForm(request.POST)
+        if form.is_valid():
+            stock = form.save(commit=False)
+            stock.created_by = request.user
+            stock.updated_by = request.user
+
+            # Check if the transaction is valid based on the transaction type and quantity.
+            if ((stock.transaction_type == StockTransaction.TRANSACTION_OUT or
+                 stock.transaction_type == StockTransaction.TRANSACTION_RETURN) and
+                    stock.quantity > stock.product.stock):
+                messages.error(request,
+                               f'Not enough stock available for this transaction. You have {stock.product.stock} in stock.')
+
+            else:
+                stock.save()
+                messages.success(request, 'Stock transaction successfully added.')
+                return redirect('pos:stock-list')  # Redirect to the stock transaction list view after adding
+        else:
+            messages.error(request, 'There was an error adding the stock transaction.')
+    else:
+        form = StockTransactionForm()
+
+    return render(request, 'pos/stock_add.html', {'form': form, 'products': products})
+
+
+@login_required
+@staff_user_required
+def stock_edit_view(request, stock_id):
+    stock_transaction = get_object_or_404(StockTransaction, pk=stock_id)
+    products = Product.objects.all()
+
+    if request.method == 'POST':
+        form = StockTransactionForm(request.POST, instance=stock_transaction)
+        if form.is_valid():
+            stock = form.save(commit=False)
+            stock.updated_by = request.user  # only updating 'updated_by' for edits
+
+            # Check if the transaction is valid based on the transaction type and quantity.
+            if ((stock.transaction_type == StockTransaction.TRANSACTION_OUT or
+                 stock.transaction_type == StockTransaction.TRANSACTION_RETURN) and
+                    stock.quantity > stock.product.stock):
+                messages.error(request,
+                               f'Not enough stock available for this transaction. You have {stock.product.stock} in stock.')
+
+            else:
+                stock.save()
+                messages.success(request, 'Stock transaction successfully updated.')
+                return redirect('pos:stock-list')  # Redirect to the stock transaction list view after editing
+        else:
+            messages.error(request, 'There was an error updating the stock transaction.')
+    else:
+        form = StockTransactionForm(instance=stock_transaction)
+
+    return render(request, 'pos/stock_edit.html',
+                  {'form': form, 'stock_transaction': stock_transaction, 'products': products})
+
+
+@login_required
+@staff_user_required
+def sale_item_list_view(request):
+    sale_items = SaleItem.objects.all().select_related('created_by', 'updated_by', 'sale', 'product')
+
+    # Number of sale items to display per page
+    per_page = 10  # Adjust the number as needed
+
+    # Create a Paginator object
+    paginator = Paginator(sale_items, per_page)
+
+    # Get the current page number from the request's GET parameters
+    page_number = request.GET.get('page')
+
+    # Get the Page object for the current page
+    page = paginator.get_page(page_number)
+    return render(request, 'pos/sale_item_list.html', {'page': page})
+
+
+@login_required
+@staff_user_required
+def sale_item_delete_view(request, sale_item_id):
+    # Ensure only admin can delete
+    if not request.user.is_admin:
+        messages.error(request, "You don't have the permission to delete this sale item.")
+        return redirect('pos:sale-item-list')  # Redirect back to the sale item list view
+
+    sale_item = get_object_or_404(SaleItem, pk=sale_item_id)
+
+    if request.method == 'POST':
+        sale_item.delete()
+        messages.success(request, 'Sale item successfully deleted.')
+        return redirect('pos:sale-item-list')  # Redirect to the sale item list view after deletion
+
+    # Since we removed the confirmation page, if the method is not POST, redirect to the list view.
+    return redirect('pos:sale-item-list')

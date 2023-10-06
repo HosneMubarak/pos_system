@@ -31,7 +31,7 @@ class SaleItemAdmin(admin.ModelAdmin):
 
 
 class StockTransactionAdmin(admin.ModelAdmin):
-    list_display = ('product', 'transaction_type', 'quantity', 'date', 'note')
+    list_display = ('product', 'transaction_type', 'quantity', 'date_added', 'note')
     list_filter = ('transaction_type', 'product')
     search_fields = ('product__code', 'note')
     list_per_page = 20

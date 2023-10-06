@@ -1,0 +1,27 @@
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+     role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+
+            <!-- Embed the form here -->
+            <form id="delete-form" method="post" style="display: inline;">
+                {% csrf_token %}
+
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirm Deletion</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    Are you sure you want to delete the "<strong id="name-to-delete"></strong>"?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <!-- Use the form's submit mechanism for deletion -->
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>

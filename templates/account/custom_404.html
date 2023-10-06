@@ -1,0 +1,46 @@
+{% include  'base.html' %}
+{% load static %}
+{% block content %}
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-11">
+                <div class="auth-full-page-content d-flex min-vh-100 py-sm-5 py-4">
+                    <div class="w-100">
+                        <div class="d-flex flex-column h-100 py-0 py-xl-4">
+                            <div class="text-center mb-5">
+                                <a href="/">
+                                    <span class="logo-lg">
+                                        <img src="{% static 'assets/images/logo-dark.png' %}" alt=""
+                                             height="21">
+                                    </span>
+                                </a>
+                            </div>
+                            <div class="card my-auto overflow-hidden">
+                                <div class="row g-0">
+                                    <div class="col-lg-12">
+                                        <div class="p-lg-5 p-4">
+                                            <div class="text-center">
+                                                <h1 class="display-1 mb-0 text-primary">404</h1>
+                                                <h3 class="text-muted mt-2 text-primary">Oops! That page can’t be found</h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- end card -->
+
+                            <div class="mt-5 text-center">
+                                <p class="mb-0 text-muted">©
+                                    <script>document.write(new Date().getFullYear())</script>
+                                    POS System. Crafted with <i class="mdi mdi-heart text-danger"></i> by Hosne Mobarak
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- end col -->
+        </div>
+        <!-- end row -->
+    </div>
+{% endblock %}
