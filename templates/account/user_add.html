@@ -9,7 +9,7 @@
             <div class="row">
                 <div class="col-12">
                     <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                        <h4 class="mb-sm-0">Edit User</h4>
+                        <h4 class="mb-sm-0">Add User</h4>
 
                         <div class="page-title-right">
                             <ol class="breadcrumb m-0">
@@ -39,103 +39,133 @@
                                         </div>
                                     {% endif %}
 
-                                    <div class="mb-3">
-                                        <label class="form-label"
-                                               for="{{ form.username.id_for_label }}">Username</label>
-                                        <input id="{{ form.username.id_for_label }}" name="{{ form.username.name }}"
-                                               placeholder="Enter Username" type="text" class="form-control"
-                                               value="{{ form.username.value|default:'' }}">
-                                        <!-- Display field-specific errors -->
-                                        {% if form.username.errors %}
-                                            <div class="text-danger">
-                                                {% for error in form.username.errors %}
-                                                    <p>{{ error }}</p>
-                                                {% endfor %}
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label"
+                                                       for="{{ form.username.id_for_label }}">Username</label>
+                                                <input id="{{ form.username.id_for_label }}"
+                                                       name="{{ form.username.name }}"
+                                                       placeholder="Enter Username" type="text" class="form-control"
+                                                       value="{{ form.username.value|default:'' }}">
+                                                <!-- Display field-specific errors -->
+                                                {% if form.username.errors %}
+                                                    <div class="text-danger">
+                                                        {% for error in form.username.errors %}
+                                                            <p>{{ error }}</p>
+                                                        {% endfor %}
+                                                    </div>
+                                                {% endif %}
                                             </div>
-                                        {% endif %}
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label class="form-label" for="{{ form.email.id_for_label }}">Email</label>
-                                        <input id="{{ form.email.id_for_label }}" name="{{ form.email.name }}"
-                                               placeholder="Enter Email" type="email" class="form-control"
-                                               value="{{ form.email.value|default:'' }}">
-                                        <!-- Display field-specific errors -->
-                                        {% if form.email.errors %}
-                                            <div class="text-danger">
-                                                {% for error in form.email.errors %}
-                                                    <p>{{ error }}</p>
-                                                {% endfor %}
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label"
+                                                       for="{{ form.email.id_for_label }}">Email</label>
+                                                <input id="{{ form.email.id_for_label }}" name="{{ form.email.name }}"
+                                                       placeholder="Enter Email" type="email" class="form-control"
+                                                       value="{{ form.email.value|default:'' }}">
+                                                <!-- Display field-specific errors -->
+                                                {% if form.email.errors %}
+                                                    <div class="text-danger">
+                                                        {% for error in form.email.errors %}
+                                                            <p>{{ error }}</p>
+                                                        {% endfor %}
+                                                    </div>
+                                                {% endif %}
                                             </div>
-                                        {% endif %}
+                                        </div>
                                     </div>
-
-                                    <div class="mb-3">
-                                        <label class="form-label" for="{{ form.first_name.id_for_label }}">First
-                                            Name</label>
-                                        <input id="{{ form.first_name.id_for_label }}" name="{{ form.first_name.name }}"
-                                               placeholder="Enter First Name" type="text" class="form-control"
-                                               value="{{ form.first_name.value|default:'' }}">
-                                        <!-- Display field-specific errors -->
-                                        {% if form.first_name.errors %}
-                                            <div class="text-danger">
-                                                {% for error in form.first_name.errors %}
-                                                    <p>{{ error }}</p>
-                                                {% endfor %}
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label" for="{{ form.first_name.id_for_label }}">First
+                                                    Name</label>
+                                                <input id="{{ form.first_name.id_for_label }}"
+                                                       name="{{ form.first_name.name }}"
+                                                       placeholder="Enter First Name" type="text" class="form-control"
+                                                       value="{{ form.first_name.value|default:'' }}">
+                                                <!-- Display field-specific errors -->
+                                                {% if form.first_name.errors %}
+                                                    <div class="text-danger">
+                                                        {% for error in form.first_name.errors %}
+                                                            <p>{{ error }}</p>
+                                                        {% endfor %}
+                                                    </div>
+                                                {% endif %}
                                             </div>
-                                        {% endif %}
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label class="form-label" for="{{ form.last_name.id_for_label }}">Last
-                                            Name</label>
-                                        <input id="{{ form.last_name.id_for_label }}" name="{{ form.last_name.name }}"
-                                               placeholder="Enter Last Name" type="text" class="form-control"
-                                               value="{{ form.last_name.value|default:'' }}">
-                                        <!-- Display field-specific errors -->
-                                        {% if form.last_name.errors %}
-                                            <div class="text-danger">
-                                                {% for error in form.last_name.errors %}
-                                                    <p>{{ error }}</p>
-                                                {% endfor %}
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label" for="{{ form.last_name.id_for_label }}">Last
+                                                    Name</label>
+                                                <input id="{{ form.last_name.id_for_label }}"
+                                                       name="{{ form.last_name.name }}"
+                                                       placeholder="Enter Last Name" type="text" class="form-control"
+                                                       value="{{ form.last_name.value|default:'' }}">
+                                                <!-- Display field-specific errors -->
+                                                {% if form.last_name.errors %}
+                                                    <div class="text-danger">
+                                                        {% for error in form.last_name.errors %}
+                                                            <p>{{ error }}</p>
+                                                        {% endfor %}
+                                                    </div>
+                                                {% endif %}
                                             </div>
-                                        {% endif %}
+                                        </div>
                                     </div>
-                                    <div class="mb-3">
-                                        <label class="form-label" for="{{ form.is_active.id_for_label }}">Active</label>
-                                        <select id="{{ form.is_active.id_for_label }}" name="{{ form.is_active.name }}"
-                                                class="form-select">
-                                            <option value="True" {% if form.is_active.value %}selected{% endif %}>Yes
-                                            </option>
-                                            <option value="False" {% if not form.is_active.value %}selected{% endif %}>
-                                                No
-                                            </option>
-                                        </select>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label class="form-label" for="{{ form.is_staff.id_for_label }}">Staff</label>
-                                        <select id="{{ form.is_staff.id_for_label }}" name="{{ form.is_staff.name }}"
-                                                class="form-select">
-                                            <option value="True" {% if form.is_staff.value %}selected{% endif %}>Yes
-                                            </option>
-                                            <option value="False" {% if not form.is_staff.value %}selected{% endif %}>
-                                                No
-                                            </option>
-                                        </select>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label class="form-label" for="{{ form.is_admin.id_for_label }}">Is
-                                            Admin</label>
-                                        <select id="{{ form.is_admin.id_for_label }}" name="{{ form.is_admin.name }}"
-                                                class="form-select">
-                                            <option value="True" {% if form.is_admin.value %}selected{% endif %}>Yes
-                                            </option>
-                                            <option value="False" {% if not form.is_admin.value %}selected{% endif %}>
-                                                No
-                                            </option>
-                                        </select>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="mb-3">
+                                                <label class="form-label"
+                                                       for="{{ form.is_active.id_for_label }}">Active</label>
+                                                <select id="{{ form.is_active.id_for_label }}"
+                                                        name="{{ form.is_active.name }}"
+                                                        class="form-select">
+                                                    <option value="True"
+                                                            {% if form.is_active.value %}selected{% endif %}>Yes
+                                                    </option>
+                                                    <option value="False"
+                                                            {% if not form.is_active.value %}selected{% endif %}>
+                                                        No
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="mb-3">
+                                                <label class="form-label"
+                                                       for="{{ form.is_staff.id_for_label }}">Staff</label>
+                                                <select id="{{ form.is_staff.id_for_label }}"
+                                                        name="{{ form.is_staff.name }}"
+                                                        class="form-select">
+                                                    <option value="True"
+                                                            {% if form.is_staff.value %}selected{% endif %}>Yes
+                                                    </option>
+                                                    <option value="False"
+                                                            {% if not form.is_staff.value %}selected{% endif %}>
+                                                        No
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="mb-3">
+                                                <label class="form-label" for="{{ form.is_admin.id_for_label }}">Is
+                                                    Admin</label>
+                                                <select id="{{ form.is_admin.id_for_label }}"
+                                                        name="{{ form.is_admin.name }}"
+                                                        class="form-select">
+                                                    <option value="True"
+                                                            {% if form.is_admin.value %}selected{% endif %}>Yes
+                                                    </option>
+                                                    <option value="False"
+                                                            {% if not form.is_admin.value %}selected{% endif %}>
+                                                        No
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
                                     </div>
 
 
