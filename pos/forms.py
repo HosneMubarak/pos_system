@@ -12,7 +12,7 @@ class CategoryForm(forms.ModelForm):
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
-        fields = ['code', 'category', 'name', 'description', 'stock', 'buy_price', 'sell_price', 'status']
+        fields = ['code', 'category', 'name', 'description', 'buy_price', 'sell_price', 'status']
 
 
 class SaleForm(forms.ModelForm):

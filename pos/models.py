@@ -14,7 +14,7 @@ class BaseUserTrackModel(models.Model):
 
 
 class Category(BaseUserTrackModel):
-    name = models.CharField(max_length=20, unique=True)
+    name = models.CharField(max_length=50, unique=True)
     description = models.TextField()
     ACTIVE = 1
     INACTIVE = 0
@@ -32,9 +32,9 @@ class Category(BaseUserTrackModel):
 
 
 class Product(BaseUserTrackModel):
-    code = models.CharField(max_length=20, unique=True)
+    code = models.CharField(max_length=30, unique=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    name = models.CharField(max_length=20, unique=True)
+    name = models.CharField(max_length=255, unique=True)
     description = models.TextField()
     stock = models.PositiveIntegerField(default=0)
     buy_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)

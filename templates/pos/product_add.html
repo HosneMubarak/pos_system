@@ -9,7 +9,7 @@
             <div class="row">
                 <div class="col-12">
                     <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                        <h4 class="mb-sm-0">Edit Product</h4>
+                        <h4 class="mb-sm-0">Add Product</h4>
 
                         <div class="page-title-right">
                             <ol class="breadcrumb m-0">
@@ -78,15 +78,20 @@
                                         </div>
                                         <div class="col-md-4">
                                             <div class="mb-3">
-                                                <label class="form-label" for="{{ form.stock.id_for_label }}">Product
-                                                    Stock Number</label>
-                                                <input id="{{ form.stock.id_for_label }}" name="{{ form.stock.name }}"
-                                                       placeholder="Enter Product Stock" type="number" min="0" step="1"
-                                                       class="form-control" value="{{ form.stock.value|default:'' }}">
-                                                <!-- Display field-specific errors -->
-                                                {% if form.stock.errors %}
+                                                <label for="{{ form.category.id_for_label }}" class="form-label">Category</label>
+                                                <select class="form-select" name="{{ form.category.name }}"
+                                                        id="{{ form.category.id_for_label }}">
+                                                    {% for category in categories %}
+                                                        <option value="{{ category.id }}"
+                                                                {% if form.category.value == category.id|stringformat:"s" %}selected{% endif %}>
+                                                            {{ category.name }}
+                                                        </option>
+                                                    {% endfor %}
+                                                </select>
+                                                <!-- Display field-specific errors for category -->
+                                                {% if form.category.errors %}
                                                     <div class="text-danger">
-                                                        {% for error in form.stock.errors %}
+                                                        {% for error in form.category.errors %}
                                                             <p>{{ error }}</p>
                                                         {% endfor %}
                                                     </div>
@@ -96,7 +101,7 @@
                                     </div>
 
                                     <div class="row">
-                                        <div class="col-md-3">
+                                        <div class="col-md-4">
                                             <div class="mb-3">
                                                 <label class="form-label" for="{{ form.buy_price.id_for_label }}">Buy
                                                     Price (1.00)</label>
@@ -116,7 +121,7 @@
                                                 {% endif %}
                                             </div>
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-4">
                                             <div class="mb-3">
                                                 <label class="form-label" for="{{ form.sell_price.id_for_label }}">Sell
                                                     Price (1.00)</label>
@@ -136,7 +141,7 @@
                                                 {% endif %}
                                             </div>
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-4">
                                             <div class="mb-3">
                                                 <label for="{{ form.status.id_for_label }}"
                                                        class="form-label">Status</label>
@@ -153,29 +158,6 @@
                                                 {% if form.status.errors %}
                                                     <div class="text-danger">
                                                         {% for error in form.status.errors %}
-                                                            <p>{{ error }}</p>
-                                                        {% endfor %}
-                                                    </div>
-                                                {% endif %}
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-3">
-                                            <div class="mb-3">
-                                                <label for="{{ form.category.id_for_label }}" class="form-label">Category</label>
-                                                <select class="form-select" name="{{ form.category.name }}"
-                                                        id="{{ form.category.id_for_label }}">
-                                                    {% for category in categories %}
-                                                        <option value="{{ category.id }}"
-                                                                {% if form.category.value == category.id|stringformat:"s" %}selected{% endif %}>
-                                                            {{ category.name }}
-                                                        </option>
-                                                    {% endfor %}
-                                                </select>
-                                                <!-- Display field-specific errors for category -->
-                                                {% if form.category.errors %}
-                                                    <div class="text-danger">
-                                                        {% for error in form.category.errors %}
                                                             <p>{{ error }}</p>
                                                         {% endfor %}
                                                     </div>
