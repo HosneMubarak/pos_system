@@ -154,7 +154,7 @@ def user_edit_view(request, user_id):
 @login_required
 @staff_user_required
 def user_delete_view(request, user_id):
-    if not request.user.is_admin and request.user.id == user_id and not request.user.is_superuser:
+    if not request.user.is_admin or request.user.is_superuser and request.user.id == user_id:
         messages.error(request, "You don't have the permission to delete users.")
         return redirect('account:user-list')  # Redirect back to the user list view
 
