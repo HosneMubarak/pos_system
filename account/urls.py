@@ -13,5 +13,6 @@ urlpatterns = [
     path('users/add/', views.user_add_view, name='user-add'),
     path('users/edit/<int:user_id>/', views.user_edit_view, name='user-edit'),
     path('users/delete/<int:user_id>/', views.user_delete_view, name='user-delete'),
+    path('set-password/<int:user_id>/', views.set_password_view, name='set-password'),
     path('permission-denied/', views.permission_denied_view, name='permission-denied')
 ]

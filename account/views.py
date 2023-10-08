@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate, login, update_session_auth_hash
 from django.contrib.auth import get_user_model
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.forms import PasswordChangeForm, SetPasswordForm
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.shortcuts import redirect
@@ -195,3 +195,27 @@ def change_password_view(request):
         form = PasswordChangeForm(request.user)
 
     return render(request, 'account/change_password.html', {'form': form})
+
+
+@login_required
+def set_password_view(request, user_id):
+    # Get the user object by user_id
+    user = get_object_or_404(get_user_model(), pk=user_id)
+
+    # Check if the logged-in user is an admin or the user being edited
+    if not request.user.is_admin and not request.user.is_superuser and request.user.id != user.id:
+        messages.error(request, "You don't have the permission to set the password for this user.")
+        return redirect('account:user-list')  # Redirect back to the user list view
+
+    if request.method == 'POST':
+        form = SetPasswordForm(user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            messages.success(request, 'Password successfully set for the user.')
+            return redirect('account:user-list')  # Redirect to the user list view after setting the password
+        else:
+            messages.error(request, 'Please correct the error below.')
+    else:
+        form = SetPasswordForm(user)
+
+    return render(request, 'account/set_password.html', {'form': form, 'user': user})
