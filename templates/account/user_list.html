@@ -74,7 +74,7 @@
                                     {% for user in page %}
                                         <tr>
                                             <td>
-                                                <i class="las la-user fs-22 align-middle me-2 text-muted"></i>{{ user.username }}
+                                                <i class="{% if user.is_admin or user.is_superuser %} las la-user-shield fs-26 {% else %}las la-user fs-22 {% endif %}align-middle me-2 text-muted"></i>{{ user.username }}
                                             </td>
                                             <td>{{ user.first_name }}</td>
                                             <td>{{ user.last_name }}</td>
