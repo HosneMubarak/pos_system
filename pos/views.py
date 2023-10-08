@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
-from django.db.models import Sum
+from django.db.models import Sum, Q
 from django.shortcuts import get_object_or_404, redirect
 from django.shortcuts import render
 
@@ -70,6 +70,20 @@ def dashboard_view(request):
 def category_list_view(request):
     # Get all categories
     categories = Category.objects.all().select_related('created_by', 'updated_by')
+
+    # Sorting
+    sort_by = request.GET.get('sort_by', 'date_updated')  # Default sorting by date_updated
+    if sort_by not in ['name', 'description', 'status', 'date_updated']:
+        sort_by = '-date_updated'  # Default to date_updated if invalid sort criteria
+    categories = categories.order_by(sort_by)
+
+    # Search
+    search_query = request.GET.get('search', '')
+    if search_query:
+        categories = categories.filter(Q(name__icontains=search_query) |
+                                       Q(description__icontains=search_query) |
+                                       Q(status__icontains=search_query))
+
     # Number of categories to display per page
     per_page = 10  # Adjust the number as needed
 
@@ -82,7 +96,7 @@ def category_list_view(request):
     # Get the Page object for the current page
     page = paginator.get_page(page_number)
 
-    return render(request, 'pos/category_list.html', {'page': page})
+    return render(request, 'pos/category_list.html', {'page': page, 'sort_by': sort_by, 'search_query': search_query})
 
 
 @login_required
@@ -148,9 +162,29 @@ def category_delete_view(request, category_id):
 @login_required
 @staff_user_required
 def product_list_view(request):
+    # Get all products
     products = Product.objects.all().select_related('created_by', 'updated_by')
 
-    # Number of categories to display per page
+    # Sorting
+    sort_by = request.GET.get('sort_by', 'date_updated')  # Default sorting by date_updated
+    if sort_by not in ['code', 'category', 'name', 'description', 'stock', 'buy_price', 'sell_price', 'status',
+                       'date_updated']:
+        sort_by = '-date_updated'  # Default to date_updated if invalid sort criteria
+    products = products.order_by(sort_by)
+
+    # Search
+    search_query = request.GET.get('search', '')
+    if search_query:
+        products = products.filter(Q(code__icontains=search_query) |
+                                   Q(category__name__icontains=search_query) |
+                                   Q(name__icontains=search_query) |
+                                   Q(description__icontains=search_query) |
+                                   Q(stock__icontains=search_query) |
+                                   Q(buy_price__icontains=search_query) |
+                                   Q(sell_price__icontains=search_query) |
+                                   Q(status__icontains=search_query))
+
+    # Number of products to display per page
     per_page = 10  # Adjust the number as needed
 
     # Create a Paginator object
@@ -162,7 +196,7 @@ def product_list_view(request):
     # Get the Page object for the current page
     page = paginator.get_page(page_number)
 
-    return render(request, 'pos/product_list.html', {'page': page})
+    return render(request, 'pos/product_list.html', {'page': page, 'sort_by': sort_by, 'search_query': search_query})
 
 
 @login_required
@@ -232,7 +266,23 @@ def stock_list_view(request):
     # Fetch related data for 'created_by', 'updated_by', and 'product' fields
     stocks = StockTransaction.objects.all().select_related('created_by', 'updated_by', 'product')
 
-    # Number of categories to display per page
+    # Sorting
+    sort_by = request.GET.get('sort_by', 'date_updated')  # Default sorting by date_updated
+    if sort_by not in ['product', 'transaction_type', 'quantity', 'note', 'date_updated']:
+        sort_by = '-date_updated'  # Default to date_updated if invalid sort criteria
+    stocks = stocks.order_by(sort_by)
+
+    # Search
+    search_query = request.GET.get('search', '')
+    if search_query:
+        stocks = stocks.filter(Q(product__code__icontains=search_query) |
+                               Q(product__category__name__icontains=search_query) |
+                               Q(product__name__icontains=search_query) |
+                               Q(transaction_type__icontains=search_query) |
+                               Q(quantity__icontains=search_query) |
+                               Q(note__icontains=search_query))
+
+    # Number of stock transactions to display per page
     per_page = 10  # Adjust the number as needed
 
     # Create a Paginator object
@@ -243,7 +293,8 @@ def stock_list_view(request):
 
     # Get the Page object for the current page
     page = paginator.get_page(page_number)
-    return render(request, 'pos/stock_list.html', {'page': page})
+
+    return render(request, 'pos/stock_list.html', {'page': page, 'sort_by': sort_by, 'search_query': search_query})
 
 
 @login_required

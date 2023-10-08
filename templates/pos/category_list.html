@@ -29,21 +29,22 @@
                             class="las la-plus me-1"></i> Add Category
                     </a>
                 </div>
-
                 <div class="col-sm-auto ms-auto">
-                    <div class="d-flex gap-3">
-                        <div class="search-box">
-                            <input type="text" class="form-control" id="searchMemberList"
-                                   placeholder="Search for Result">
-                            <i class="las la-search search-icon"></i>
+                    <form method="get" action="{% url 'pos:category-list' %}">
+                        <div class="d-flex gap-3">
+                            <div class="search-box">
+                                <input type="text" class="form-control" id="searchCategoryList"
+                                       name="search" value="{{ request.GET.search }}"
+                                       placeholder="Search for Result">
+                                <i class="las la-search search-icon"></i>
+                            </div>
+                            <div class="">
+                                <button type="submit" class="btn btn-soft-info">Search</button>
+                            </div>
                         </div>
-                        <div class="">
-                            <button type="button"
-                                    class="btn btn-soft-info">Search
-                            </button>
-                        </div>
-                    </div>
+                    </form>
                 </div>
+
             </div>
 
             <div class="row">
