@@ -359,3 +359,11 @@ def sale_item_delete_view(request, sale_item_id):
 
     # Since we removed the confirmation page, if the method is not POST, redirect to the list view.
     return redirect('pos:sale-item-list')
+
+
+@login_required
+@staff_user_required
+def make_sale_view(request):
+    # Get all products
+    products = Product.objects.all()
+    return render(request, 'pos/make_sale.html', {'products': products})

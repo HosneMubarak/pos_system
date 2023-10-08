@@ -1,0 +1,260 @@
+{% extends 'dashboard_base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="page-content">
+        <div class="container-fluid">
+            {% include 'base_message.html' %}
+            <!-- start page title -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                        <h4 class="mb-sm-0">Make Sales</h4>
+
+                        <div class="page-title-right">
+                            <ol class="breadcrumb m-0">
+                                <li class="breadcrumb-item"><a href="{% url 'pos:dashboard' %}">Dashboard</a></li>
+                                <li class="breadcrumb-item active">Make Sales</li>
+                            </ol>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <!-- end page title -->
+
+            <div class="row justify-content-center">
+                <div class="col-xxl-9">
+                    <div class="card">
+                        <form class="needs-validation" novalidate id="invoice_form">
+                            <div class="card-body p-4 border-top border-top-dashed">
+                                <div class="card-body p-4">
+                                    <div class="table-responsive">
+                                        <table class="invoice-table table table-borderless table-nowrap mb-0">
+                                            <thead class="align-middle">
+                                            <tr class="table-active">
+                                                <th scope="col">
+                                                    Product Name
+                                                </th>
+                                                <th scope="col" style="width: 120px;">Quantity</th>
+                                                <th scope="col" class="text-end" style="width: 105px;"></th>
+                                            </tr>
+                                            </thead>
+                                            <tbody id="">
+                                            <tr id="" class="product">
+                                                <td class="text-start">
+                                                    <div class="mb-2">
+                                                        <!-- Search Input with DataList -->
+                                                        <input list="product-datalist"
+                                                               class="form-control bg-light border-0"
+                                                               placeholder="Search Product..." id="productSearch-1">
+
+                                                        <datalist id="product-datalist">
+                                                            {% for product in products %}
+                                                                <option value="{{ product.name }}"
+                                                                        data-id="{{ product.id }}"
+                                                                        data-price="{{ product.price }}"></option>
+                                                            {% endfor %}
+                                                        </datalist>
+
+
+                                                        <!-- Hidden Select for Storing Selected Product ID -->
+                                                        <select class="form-control bg-light border-0 mt-2"
+                                                                name="product_name" id="productName-1" hidden>
+                                                            <option value="" disabled selected>Select Product</option>
+                                                            {% for product in products %}
+                                                                <option value="{{ product.id }}">{{ product.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                </td>
+
+                                                <td>
+                                                    <div class="input-step">
+                                                        <button type="button" class='minus'>–</button>
+                                                        <input type="number" class="product-quantity" id="product-qty-1"
+                                                               value="0">
+                                                        <button type="button" class='plus'>+</button>
+                                                    </div>
+                                                </td>
+                                                <td colspan="5">
+                                                    <a href="javascript:new_link()" id="add-item"
+                                                       class="btn btn-soft-secondary fw-medium"><i
+                                                            class="ri-add-fill me-1 align-bottom"></i> Add Item</a>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                        <!--end table-->
+                                    </div>
+                                    <!--end row-->
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="card-body p-4">
+                                <div class="table-responsive">
+                                    <table class="invoice-table table table-borderless table-nowrap mb-0">
+                                        <thead class="align-middle">
+                                        <tr class="table-active">
+                                            <th scope="col" style="width: 50px;">#</th>
+                                            <th scope="col">
+                                                Product Details
+                                            </th>
+                                            <th scope="col" style="width: 120px;">
+                                                <div class="d-flex currency-select input-light align-items-center">
+                                                    Rate ($)
+                                                </div>
+                                            </th>
+                                            <th scope="col" style="width: 120px;">Quantity</th>
+                                            <th scope="col" class="text-end" style="width: 120px;">Amount</th>
+                                            <th scope="col" class="text-end" style="width: 105px;"></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody id="newlink">
+                                        <tr id="1" class="product" id="product-item">
+                                            <th scope="row" class="product-id">
+                                                <div class="mb-2">
+                                                    <p class="form-control bg-light border-0">1</p>
+                                                </div>
+                                            </th>
+                                            <td class="text-start">
+                                                <div class="mb-2">
+                                                    <p class="form-control bg-light border-0">Product Name</p>
+                                                </div>
+                                            </td>
+                                            <td class="text-start">
+                                                <div class="mb-2">
+                                                    <p class="form-control bg-light border-0" id="sell_price">0</p>
+                                                </div>
+                                            </td>
+                                            <td class="text-start">
+                                                <div class="mb-2">
+                                                    <p class="form-control bg-light border-0" id="quantity">0</p>
+                                                </div>
+                                            </td>
+                                            <td class="text-start">
+                                                <div class="mb-2">
+                                                    <p class="form-control bg-light border-0" id="ammount">0.0</p>
+                                                </div>
+                                            </td>
+                                            <td class="product-removal">
+                                                <button class="btn btn-success">Delete</button>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                        <tbody>
+                                        <tr class="border-top border-top-dashed mt-2">
+                                            <td colspan="3"></td>
+                                            <td colspan="2" class="p-0">
+                                                <table class="table table-borderless table-sm table-nowrap align-middle mb-0">
+                                                    <tbody>
+                                                    <tr>
+                                                        <th scope="row">Sub Total</th>
+                                                        <td style="width:150px;">
+                                                            <input type="text" class="form-control bg-light border-0"
+                                                                   id="cart-subtotal" placeholder="$0.00" readonly/>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row">Estimated Tax (12.5%)</th>
+                                                        <td>
+                                                            <input type="text" class="form-control bg-light border-0"
+                                                                   id="cart-tax" placeholder="$0.00" readonly/>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row">Discount <small
+                                                                class="text-muted">(Invoika15)</small></th>
+                                                        <td>
+                                                            <input type="text" class="form-control bg-light border-0"
+                                                                   id="cart-discount" placeholder="$0.00" readonly/>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row">Shipping Charge</th>
+                                                        <td>
+                                                            <input type="text" class="form-control bg-light border-0"
+                                                                   id="cart-shipping" placeholder="$0.00" readonly/>
+                                                        </td>
+                                                    </tr>
+                                                    <tr class="border-top border-top-dashed">
+                                                        <th scope="row">Total Amount</th>
+                                                        <td>
+                                                            <input type="text" class="form-control bg-light border-0"
+                                                                   id="cart-total" placeholder="$0.00" readonly/>
+                                                        </td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                                <!--end table-->
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                    <!--end table-->
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col-lg-4">
+                                    </div>
+                                    <!--end col-->
+                                </div>
+                                <!--end row-->
+                                <div class="hstack gap-2 justify-content-end d-print-none mt-4">
+                                    <button type="submit" class="btn btn-info"><i
+                                            class="ri-printer-line align-bottom me-1"></i> Save
+                                    </button>
+                                    <a href="javascript:void(0);" class="btn btn-primary"><i
+                                            class="ri-download-2-line align-bottom me-1"></i> Download Invoice</a>
+                                    <a href="javascript:void(0);" class="btn btn-danger"><i
+                                            class="ri-send-plane-fill align-bottom me-1"></i> Send Invoice</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <!--end col-->
+            </div>
+            <!--end row-->
+
+
+        </div>
+        <!-- container-fluid -->
+    </div>
+    <!-- End Page-content -->
+{% endblock %}
+
+{% block extra_js %}
+    <script type="text/javascript">
+
+        // Event listener for product search input
+        document.getElementById('productSearch-1').addEventListener('change', function () {
+            let selectedName = this.value;
+            let selectElem = document.getElementById('productName-1');
+            for (let option of selectElem.options) {
+                if (option.text === selectedName) {
+                    option.selected = true;
+                    break;
+                }
+            }
+        });
+
+        // Event listener for the plus button
+        document.querySelector('.plus').addEventListener('click', function () {
+            let qtyInput = document.getElementById('product-qty-1');
+            qtyInput.value = parseInt(qtyInput.value, 10) + 1;
+        });
+
+        // Event listener for the minus button
+        document.querySelector('.minus').addEventListener('click', function () {
+            let qtyInput = document.getElementById('product-qty-1');
+            if (parseInt(qtyInput.value, 10) > 0) {
+                qtyInput.value = parseInt(qtyInput.value, 10) - 1;
+            }
+        });
+
+    </script>
+{% endblock %}
+
+
+
+

@@ -20,6 +20,6 @@ urlpatterns = [
     path('stock/<int:stock_id>/', views.stock_detail_view, name='stock-detail'),
     path('sale-item/', views.sale_item_list_view, name='sale-item-list'),
     path('sale-item/delete/<int:sale_item_id>/', views.sale_item_delete_view, name='sale-item-delete'),
-
+    path('make_sale/', views.make_sale_view, name='make-sale'),
     # ... other url patterns ...
 ]
