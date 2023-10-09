@@ -155,14 +155,20 @@ def user_edit_view(request, user_id):
 @login_required
 @staff_user_required
 def user_delete_view(request, user_id):
-    if not request.user.is_admin or request.user.is_superuser and request.user.id == user_id:
+    user_to_delete = get_object_or_404(get_user_model(), pk=user_id)
+
+    # Check if the user being deleted is a superuser
+    if user_to_delete.is_superuser:
+        messages.error(request, "You can't delete a superuser.")
+        return redirect('account:user-list')  # Redirect back to the user list view
+
+    # Check if the requesting user is an admin or superuser, but a superuser can't delete themselves
+    if not request.user.is_admin or (request.user.is_superuser and request.user.id == user_id):
         messages.error(request, "You don't have the permission to delete users.")
         return redirect('account:user-list')  # Redirect back to the user list view
 
-    user = get_object_or_404(get_user_model(), pk=user_id)
-
     if request.method == 'POST':
-        user.delete()
+        user_to_delete.delete()
         messages.success(request, 'User successfully deleted.')
         return redirect('account:user-list')  # Redirect to the user list view after deletion
 
