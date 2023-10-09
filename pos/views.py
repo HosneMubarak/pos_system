@@ -439,13 +439,15 @@ def save_sale_view(request):
             # Get form data
             product_data = json.loads(request.POST.get('product_data'))
 
+            print(product_data)
             # Typecasting amounts into decimals
             grand_total = Decimal(request.POST.get('grand_total'))
             tendered_amount = Decimal(request.POST.get('tendered_amount'))
             amount_change = Decimal(request.POST.get('amount_change'))
 
             # Save the Sale instance
-            sale = Sale(grand_total=grand_total, tendered_amount=tendered_amount, amount_change=amount_change,
+            sale = Sale(grand_total=grand_total, sub_total=grand_total, tendered_amount=tendered_amount,
+                        amount_change=amount_change,
                         created_by=request.user, updated_by=request.user)
             sale.save()
 
@@ -466,7 +468,7 @@ def save_sale_view(request):
                 sale_item.save()
 
             messages.success(request, "Sale saved successfully!")
-            return redirect('pos:dashboard')
+            return redirect('pos:sale-list')
 
         except Exception as e:
             # Log the exception for debugging (this step is optional but helpful)

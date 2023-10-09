@@ -58,6 +58,7 @@
                                         <th scope="col">Sub Total</th>
                                         <th scope="col">Tax Amount</th>
                                         <th scope="col">Grand Total</th>
+                                        <th scope="col">Sale By</th>
                                         <th scope="col">Actions</th>
                                     </tr>
                                     </thead>
@@ -69,6 +70,7 @@
                                             <td>{{ sale.sub_total }}</td>
                                             <td>{{ sale.tax_amount }}</td>
                                             <td>{{ sale.grand_total }}</td>
+                                            <td>{{ sale.created_by.username }}</td>
                                             <td>
                                                 <div class="dropdown">
                                                     <button class="btn btn-soft-secondary btn-sm dropdown-toggle"

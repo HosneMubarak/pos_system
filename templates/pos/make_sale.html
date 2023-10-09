@@ -142,7 +142,7 @@
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <th scope="row">Change</th>
+                                                        <th scope="row">Change Ammount</th>
                                                         <td>
                                                             <input type="number" class="form-control bg-light border-0"
                                                                    id="change-aamount" placeholder="$0.00" readonly/>
@@ -210,7 +210,7 @@
                 let totalAmount = 0;
 
                 for (let row of rows) {
-                    let amount = parseFloat(row.querySelector('[data-ammount]').textContent);
+                    let amount = parseFloat(row.querySelector('[data-amount]').textContent);
                     totalAmount += amount;
                 }
 
@@ -272,35 +272,35 @@
                 let newRow = document.createElement('tr');
                 newRow.className = 'product';
                 newRow.innerHTML = `
-            <th scope="row" class="product-id">
-                <div class="mb-2">
-                    <p class="form-control bg-light border-0">${tbody.children.length + 1}</p>
-                </div>
-            </th>
-            <td class="text-start">
-                <div class="mb-2">
-                    <p class="form-control bg-light border-0">${productName}</p>
-                </div>
-            </td>
-            <td class="text-start">
-                <div class="mb-2">
-                    <p class="form-control bg-light border-0" data-sell-price>${sellPrice.toFixed(2)}</p>
-                </div>
-            </td>
-            <td class="text-start">
-                <div class="mb-2">
-                    <p class="form-control bg-light border-0" data-quantity>${productQuantity}</p>
-                </div>
-            </td>
-            <td class="text-start">
-                <div class="mb-2">
-                    <p class="form-control bg-light border-0" data-ammount>${amount.toFixed(2)}</p>
-                </div>
-            </td>
-            <td class="product-removal">
-                <button class="btn btn-success remove-button">Delete</button>
-            </td>
-        `;
+                    <th scope="row" class="product-id">
+                        <div class="mb-2">
+                            <p class="form-control bg-light border-0">${productData.id}</p>
+                        </div>
+                    </th>
+                    <td class="text-start">
+                        <div class="mb-2">
+                            <p class="form-control bg-light border-0">${productName}</p>
+                        </div>
+                    </td>
+                    <td class="text-start">
+                        <div class="mb-2">
+                            <p class="form-control bg-light border-0" data-sell-price>${sellPrice.toFixed(2)}</p>
+                        </div>
+                    </td>
+                    <td class="text-start">
+                        <div class="mb-2">
+                            <p class="form-control bg-light border-0" data-quantity>${productQuantity}</p>
+                        </div>
+                    </td>
+                    <td class="text-start">
+                        <div class="mb-2">
+                            <p class="form-control bg-light border-0" data-amount>${amount.toFixed(2)}</p>
+                        </div>
+                    </td>
+                    <td class="product-removal">
+                        <button class="btn btn-success remove-button">Delete</button>
+                    </td>
+                `;
 
                 tbody.appendChild(newRow);
 
@@ -356,6 +356,5 @@
             });
 
         });
-
     </script>
 {% endblock %}
