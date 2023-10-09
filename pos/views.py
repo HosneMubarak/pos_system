@@ -439,7 +439,11 @@ def save_sale_view(request):
             # Get form data
             product_data = json.loads(request.POST.get('product_data'))
 
-            print(product_data)
+            # Check if product_data is empty
+            if not product_data:
+                messages.warning(request, "No products selected for the sale.")
+                return redirect('pos:make-sale')
+
             # Typecasting amounts into decimals
             grand_total = Decimal(request.POST.get('grand_total'))
             tendered_amount = Decimal(request.POST.get('tendered_amount'))
