@@ -58,26 +58,30 @@
                         <div class="card-body pt-1">
                             <div class="row">
                                 <div class="col-lg-6 mini-widget pb-3 pb-lg-0">
-                                    <div class="d-flex align-items-end">
-                                        <div class="flex-grow-1">
-                                            <h2 class="mb-0 fs-24"><span class="counter-value"
-                                                                         data-target="{{ sales_count_for_interval }}">{{ sales_count_for_interval }}</span>
-                                            </h2>
-                                            <h5 class="text-muted fs-16 mt-2 mb-0">Total Sales Count</h5>
+                                    <a href="{% url 'pos:sale-list' %}">
+                                        <div class="d-flex align-items-end">
+                                            <div class="flex-grow-1">
+                                                <h2 class="mb-0 fs-24"><span class="counter-value"
+                                                                             data-target="{{ sales_count_for_interval }}">{{ sales_count_for_interval }}</span>
+                                                </h2>
+                                                <h5 class="text-muted fs-16 mt-2 mb-0">Total Sales Count</h5>
+                                            </div>
                                         </div>
-                                    </div>
+                                    </a>
                                 </div>
 
                                 <div class="col-lg-6 mini-widget py-3 py-lg-0">
-                                    <div class="d-flex align-items-end">
-                                        <div class="flex-grow-1">
-                                            <h2 class="mb-0 fs-24"><i class="las la-dollar-sign"></i><span
-                                                    class="counter-value"
-                                                    data-target="{{ sales_amount_for_interval }}">{{ sales_amount_for_interval }}</span>
-                                            </h2>
-                                            <h5 class="text-muted fs-16 mt-2 mb-0">Total Sales Amount</h5>
+                                    <a href="{% url 'pos:sale-list' %}">
+                                        <div class="d-flex align-items-end">
+                                            <div class="flex-grow-1">
+                                                <h2 class="mb-0 fs-24"><i class="las la-dollar-sign"></i><span
+                                                        class="counter-value"
+                                                        data-target="{{ sales_amount_for_interval }}">{{ sales_amount_for_interval }}</span>
+                                                </h2>
+                                                <h5 class="text-muted fs-16 mt-2 mb-0">Total Sales Amount</h5>
+                                            </div>
                                         </div>
-                                    </div>
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -130,7 +134,7 @@
                                                             <span class="counter-value"
                                                                   data-target="{{ total_stock }}">{{ total_stock }}</span>
                                                 </h2>
-                                                <h5 class="text-muted fs-16 mt-2 mb-0">Stocks Added</h5>
+                                                <h5 class="text-muted fs-16 mt-2 mb-0">Stock Available</h5>
                                             </div>
                                         </div>
                                     </a>
