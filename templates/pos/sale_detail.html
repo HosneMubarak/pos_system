@@ -1,0 +1,111 @@
+{% extends 'dashboard_base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="page-content">
+        <div class="container-fluid">
+
+            <!-- start page title -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                        <h4 class="mb-sm-0">Invoice Details for Sale #{{ sale.code }}</h4>
+
+                        <div class="page-title-right">
+                            <ol class="breadcrumb m-0">
+                                <li class="breadcrumb-item"><a href="javascript: void(0);">Invoice</a></li>
+                                <li class="breadcrumb-item active">Invoice Details</li>
+                            </ol>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <!-- end page title -->
+
+            <div class="row justify-content-center">
+                <div class="col-xxl-9">
+                    <div class="card" id="demo">
+                        <div class="card-body">
+                            <div class="row p-4 border-top border-top-dashed">
+                                <div class="col-lg-9">
+                                    <div class="row g-3">
+                                        <!--end col-->
+                                        <div class="col-6">
+                                            <h6 class="text-muted text-uppercase fw-semibold mb-3">ELUXGO EMPIRE</h6>
+                                            <p class="text-muted mb-1" id="shipping-address-line-1">KSL CITY MALL,
+                                                Malaysia</p>
+                                        </div>
+                                        <!--end col-->
+                                    </div>
+                                    <!--end row-->
+                                </div><!--end col-->
+
+                                <div class="col-lg-3">
+                                    <p class="">Date: {{ sale.date_added|date:"M d, Y" }}</p>
+                                </div>
+
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="card-body p-4">
+                                        <div class="table-responsive">
+                                            <table class="table table-borderless text-center table-nowrap align-middle mb-0">
+                                                <thead>
+                                                <tr class="table-active">
+                                                    <th scope="col" style="width: 50px;">#</th>
+                                                    <th scope="col">Product Details</th>
+                                                    <th scope="col">Rate</th>
+                                                    <th scope="col">Quantity</th>
+                                                    <th scope="col" class="text-end">Amount</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody id="products-list">
+                                                {% for item in sales_items %}
+                                                    <tr>
+                                                        <th scope="row">{{ forloop.counter }}</th>
+                                                        <td class="text-start">
+                                                            <span class="fw-medium">{{ item.product.name }}</span>
+                                                            <p class="text-muted mb-0">{{ item.product.description }}</p>
+                                                        </td>
+                                                        <td>${{ item.price }}</td>
+                                                        <td>{{ item.qty }}</td>
+                                                        <td class="text-end">${{ item.total }}</td>
+                                                    </tr>
+                                                {% endfor %}
+                                                </tbody>
+                                            </table><!--end table-->
+                                        </div>
+                                        <div class="border-top border-top-dashed mt-2">
+                                            <table class="table table-borderless table-nowrap align-middle mb-0 ms-auto"
+                                                   style="width:250px">
+                                                <tbody>
+                                                <tr class="border-top border-top-dashed fs-15">
+                                                    <th scope="row">Total Amount</th>
+                                                    <th class="text-end">${{ sale.grand_total }}</th>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                            <!--end table-->
+                                        </div>
+                                        <div class="hstack gap-2 justify-content-end d-print-none mt-4">
+                                            <a href="javascript:window.print()" class="btn btn-info"><i
+                                                    class="ri-printer-line align-bottom me-1"></i> Print</a>
+                                            <a href="{% url 'pos:sale-list' %}" class="btn btn-primary"><i
+                                                    class="ri-download-2-line align-bottom me-1"></i> Close</a>
+                                        </div>
+                                    </div>
+                                    <!--end card-body-->
+                                </div><!--end col-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--end col-->
+            </div>
+
+        </div>
+        <!-- container-fluid -->
+    </div>
+{% endblock %}

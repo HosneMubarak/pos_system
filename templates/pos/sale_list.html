@@ -80,7 +80,8 @@
                                                     <ul class="dropdown-menu">
                                                         <!-- Update action links as needed -->
                                                         <li>
-                                                            <a href="#" class="dropdown-item">
+                                                            <a href="{% url 'pos:sale-detail' sale_id=sale.id %}"
+                                                               class="dropdown-item">
                                                                 <i class="las la-eye fs-18 align-middle me-2 text-muted"></i>
                                                                 View
                                                             </a>
@@ -165,4 +166,6 @@
             });
         });
     </script>
+
+    <script></script>
 {% endblock %}

@@ -528,3 +528,66 @@ def sale_delete_view(request, sale_id):
 
     # If the method is not POST, redirect to the list view.
     return redirect('pos:sale-list')
+
+
+@login_required
+@staff_user_required
+def sale_detail_view(request, sale_id):
+    # Ensure only admin/staff can view sale details
+    if not request.user.is_staff:
+        messages.error(request, "You don't have the permission to view this sale.")
+        return redirect('pos:sale-list')  # Redirect back to the sale list view
+
+    sale = get_object_or_404(Sale, pk=sale_id)
+
+    # You can also fetch related data like sales items for this sale if needed
+    sales_items = sale.salesitem_set.all()  # Assuming you have a related SalesItem model
+
+    context = {
+        'sale': sale,
+        'sales_items': sales_items,
+    }
+
+    return render(request, 'sale_detail.html', context)
+
+
+@login_required
+@staff_user_required
+def sale_detail_view(request, sale_id):
+    # Ensure only admin/staff can view sale details
+    if not request.user.is_staff:
+        messages.error(request, "You don't have the permission to view this sale.")
+        return redirect('pos:sale-list')  # Redirect back to the sale list view
+
+    sale = get_object_or_404(Sale, pk=sale_id)
+
+    # You can also fetch related data like sales items for this sale if needed
+    sales_items = sale.salesitem_set.all()  # Assuming you have a related SalesItem model
+
+    context = {
+        'sale': sale,
+        'sales_items': sales_items,
+    }
+
+    return render(request, 'sale_detail.html', context)
+
+
+@login_required
+@staff_user_required
+def sale_detail_view(request, sale_id):
+    # Ensure only admin/staff can view sale details
+    if not request.user.is_staff:
+        messages.error(request, "You don't have the permission to view this sale.")
+        return redirect('pos:sale-list')  # Redirect back to the sale list view
+
+    sale = get_object_or_404(Sale, pk=sale_id)
+
+    # You can also fetch related data like sales items for this sale if needed
+    sales_items = sale.saleitem_set.all()  # Assuming you have a related SalesItem model
+
+    context = {
+        'sale': sale,
+        'sales_items': sales_items,
+    }
+
+    return render(request, 'pos/sale_detail.html', context)

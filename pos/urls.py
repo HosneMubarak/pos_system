@@ -24,6 +24,7 @@ urlpatterns = [
     path('save-sale/', views.save_sale_view, name='save_sale'),
     path('sale-list/', views.sale_list_view, name='sale-list'),
     path('sale/delete/<int:sale_id>/', views.sale_delete_view, name='sale-delete'),
+    path('sale/<int:sale_id>/', views.sale_detail_view, name='sale-detail'),
 
     # ... other url patterns ...
 ]
