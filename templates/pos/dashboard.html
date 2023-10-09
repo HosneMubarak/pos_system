@@ -29,7 +29,7 @@
                         <div class="card-header border-0 align-items-center d-flex">
                             <h4 class="card-title mb-0 flex-grow-1">{% if time_interval == 'weekly' %}Last
                                 Week's{% elif time_interval == 'monthly' %}Last
-                                Month's{% elif time_interval == 'yearly' %}Last Year's{% else %}Last 24 hr{% endif %}
+                                Month's{% elif time_interval == 'yearly' %}Last 1 Year's{% else %}Last 24 hr{% endif %}
                                 Overview</h4>
                             <div class="flex-shrink-0">
                                 <div class="dropdown card-header-dropdown">
@@ -38,7 +38,7 @@
                                         <span class="fw-semibold text-uppercase fs-14">Sort by: </span><span
                                             class="text-muted">{% if time_interval == 'weekly' %}Last
                                         Week{% elif time_interval == 'monthly' %}Last
-                                        Month{% elif time_interval == 'yearly' %}Last Year{% else %}Last 24
+                                        Month{% elif time_interval == 'yearly' %}Last 1 Year{% else %}Last 24
                                         Hr{% endif %}<i
                                             class="las la-angle-down fs-12 ms-2"></i></span>
                                     </a>
@@ -49,7 +49,7 @@
                                         <a class="dropdown-item"
                                            href="{% url 'pos:dashboard' %}?time_interval=monthly">Last Month</a>
                                         <a class="dropdown-item"
-                                           href="{% url 'pos:dashboard' %}?time_interval=yearly">Current Year</a>
+                                           href="{% url 'pos:dashboard' %}?time_interval=yearly">Last 1 Year</a>
                                     </div>
                                 </div>
                             </div>
@@ -64,7 +64,7 @@
                                                 <h2 class="mb-0 fs-24"><span class="counter-value"
                                                                              data-target="{{ sales_count_for_interval }}">{{ sales_count_for_interval }}</span>
                                                 </h2>
-                                                <h5 class="text-muted fs-16 mt-2 mb-0">Total Sales Count</h5>
+                                                <h5 class="text-muted fs-16 mt-2 mb-0">Total Invoice Count</h5>
                                             </div>
                                         </div>
                                     </a>
