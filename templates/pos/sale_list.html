@@ -9,15 +9,14 @@
             <div class="row">
                 <div class="col-12">
                     <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                        <h4 class="mb-sm-0">Sale Product List</h4>
+                        <h4 class="mb-sm-0">Sales List</h4>
 
                         <div class="page-title-right">
                             <ol class="breadcrumb m-0">
                                 <li class="breadcrumb-item"><a href="{% url 'pos:dashboard' %}">Dashboard</a></li>
-                                <li class="breadcrumb-item active">Sale Product List</li>
+                                <li class="breadcrumb-item active">Sales List</li>
                             </ol>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -31,12 +30,12 @@
                 </div>
 
                 <div class="col-sm-auto ms-auto">
-                    <form method="get" action="{% url 'pos:sale-item-list' %}">
+                    <form method="get" action="{% url 'pos:sale-list' %}">
                         <div class="d-flex gap-3">
                             <div class="search-box">
-                                <input type="text" class="form-control" id="searchProductList"
+                                <input type="text" class="form-control" id="searchSalesList"
                                        name="search" value="{{ request.GET.search }}"
-                                       placeholder="Search for Result">
+                                       placeholder="Search for Sales">
                                 <i class="las la-search search-icon"></i>
                             </div>
                             <div class="">
@@ -55,29 +54,35 @@
                                 <table class="table table-hover table-nowrap align-middle mb-0">
                                     <thead>
                                     <tr class="text-muted text-uppercase">
-                                        <th scope="col">Product</th>
-                                        <th scope="col">Sale Invoice</th>
-                                        <th scope="col">Price</th>
-                                        <th scope="col">Quantity</th>
-                                        <th scope="col">Total</th>
+                                        <th scope="col">Sale Code</th>
+                                        <th scope="col">Sub Total</th>
+                                        <th scope="col">Tax Amount</th>
+                                        <th scope="col">Grand Total</th>
+                                        <th scope="col">Actions</th>
                                     </tr>
                                     </thead>
 
                                     <tbody>
                                     {% for sale in page %}
                                         <tr>
-                                            <td>{{ sale.product }}</td>
-                                            <td>{{ sale.sale }}</td>
-                                            <td>{{ sale.price }}</td>
-                                            <td>{{ sale.qty }}</td>
-                                            <td>{{ sale.total }}</td>
+                                            <td>{{ sale.code }}</td>
+                                            <td>{{ sale.sub_total }}</td>
+                                            <td>{{ sale.tax_amount }}</td>
+                                            <td>{{ sale.grand_total }}</td>
                                             <td>
                                                 <div class="dropdown">
-                                                    <button class="btn btn-soft-secondary btn-sm dropdown" type="button"
-                                                            data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <button class="btn btn-soft-secondary btn-sm dropdown-toggle"
+                                                            type="button" data-bs-toggle="dropdown">
                                                         <i class="las la-ellipsis-h align-middle fs-18"></i>
                                                     </button>
-                                                    <ul class="dropdown-menu dropdown-menu-end">
+                                                    <ul class="dropdown-menu">
+                                                        <!-- Update action links as needed -->
+                                                        <li>
+                                                            <a href="#" class="dropdown-item">
+                                                                <i class="las la-eye fs-18 align-middle me-2 text-muted"></i>
+                                                                View
+                                                            </a>
+                                                        </li>
                                                         <li>
                                                             <a href="#" class="dropdown-item remove-item-btn delete-btn"
                                                                data-id="{{ sale.id }}"
@@ -87,14 +92,13 @@
                                                                 Delete
                                                             </a>
                                                         </li>
-                                                        </li>
                                                     </ul>
                                                 </div>
                                             </td>
                                         </tr>
                                     {% empty %}
                                         <tr>
-                                            <td colspan="5">No categories found.</td>
+                                            <td colspan="5">No sales found.</td>
                                         </tr>
                                     {% endfor %}
                                     </tbody><!-- end tbody -->
@@ -154,12 +158,9 @@
                     dataNameElement.textContent = dataName;  // Populate modal with name
 
                     // Update the form's action to point to the delete view
-                    deleteForm.action = `{% url 'pos:sale-item-delete' sale_item_id='0' %}`.replace('0', dataId);
+                    deleteForm.action = `{% url 'pos:sale-delete' sale_id='0' %}`.replace('0', dataId);
                 });
             });
         });
     </script>
 {% endblock %}
-
-
-

@@ -1,4 +1,6 @@
+import json
 from datetime import datetime, timedelta
+from decimal import Decimal
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -15,51 +17,50 @@ from .models import *
 @login_required
 @staff_user_required
 def dashboard_view(request):
-    today = datetime.now().date()
+    current_datetime = datetime.now()
+    selected_interval = request.GET.get('time_interval')
 
-    time_interval = request.GET.get('time_interval')
+    # By default, set the interval's ending point to the current datetime
+    interval_end = current_datetime
 
-    if time_interval == 'weekly':
-        start_date = today - timedelta(days=today.weekday())
-        end_date = start_date + timedelta(days=6)
-    elif time_interval == 'monthly':
-        start_date = today.replace(day=1)
-        end_date = start_date.replace(day=1, month=start_date.month + 1) - timedelta(days=1)
-    elif time_interval == 'yearly':
-        start_date = today.replace(month=1, day=1)
-        end_date = start_date.replace(year=start_date.year + 1) - timedelta(days=1)
+    if selected_interval == 'weekly':
+        interval_start = current_datetime - timedelta(days=6)
+    elif selected_interval == 'monthly':
+        interval_start = current_datetime - timedelta(days=29)
+    elif selected_interval == 'yearly':
+        interval_start = current_datetime - timedelta(days=364)
     else:
-        # Default to daily if no or invalid parameter is provided
-        start_date = end_date = today
+        # Default to the last 24 hours if no or invalid parameter is provided
+        interval_start = current_datetime - timedelta(hours=24)
 
-    total_categories = Category.objects.count()
-    total_products = Product.objects.count()
+    category_count = Category.objects.count()
+    product_count = Product.objects.count()
 
     # Use get_user_model() to reference your custom user model
-    total_users = get_user_model().objects.count()  # Get the total number of users based on your custom user model
+    user_count = get_user_model().objects.count()
 
-    # Get the aggregated values directly in the context
-    total_stock = Product.objects.aggregate(sum=models.Sum('stock'))['sum'] or 0
-    todays_sales_count = Sale.objects.filter(
-        date_added__date__range=(start_date, end_date)
+    # Aggregated stock from all products
+    aggregated_stock = Product.objects.aggregate(sum=models.Sum('stock'))['sum'] or 0
+    sales_count_in_interval = Sale.objects.filter(
+        date_added__range=(interval_start, interval_end)
     ).count()
-    todays_sales_amount = Sale.objects.filter(
-        date_added__date__range=(start_date, end_date)
+    sales_amount_in_interval = Sale.objects.filter(
+        date_added__range=(interval_start, interval_end)
     ).aggregate(total_sales=Sum('grand_total'))['total_sales'] or 0
 
-    recent_transactions = StockTransaction.objects.select_related('product').filter(
-        date_added__date__range=(start_date, end_date)
-    ).order_by('-date_added')[:5]  # last 5 transactions, with related Product data
+    recent_stock_transactions = StockTransaction.objects.select_related('product').filter(
+        date_added__range=(interval_start, interval_end)
+    ).order_by('-date_added')[:5]
 
     context = {
-        'total_categories': total_categories,
-        'total_products': total_products,
-        'total_stock': total_stock,
-        'total_users': total_users,
-        'todays_sales_count': todays_sales_count,
-        'todays_sales_amount': todays_sales_amount,
-        'recent_transactions': recent_transactions,
-        'time_interval': time_interval or 'daily',
+        'total_categories': category_count,
+        'total_products': product_count,
+        'total_stock': aggregated_stock,
+        'total_users': user_count,
+        'sales_count_for_interval': sales_count_in_interval,
+        'sales_amount_for_interval': sales_amount_in_interval,
+        'recent_transactions': recent_stock_transactions,
+        'time_interval': selected_interval or 'today',
     }
 
     return render(request, 'pos/dashboard.html', context)
@@ -379,8 +380,17 @@ def stock_edit_view(request, stock_id):
 def sale_item_list_view(request):
     sale_items = SaleItem.objects.all().select_related('created_by', 'updated_by', 'sale', 'product')
 
+    # Search
+    search_query = request.GET.get('search', '')
+    if search_query:
+        sale_items = sale_items.filter(
+            Q(product__code__icontains=search_query) |
+            Q(product__name__icontains=search_query) |
+            Q(sale__code__icontains=search_query)
+        )
+
     # Number of sale items to display per page
-    per_page = 10  # Adjust the number as needed
+    per_page = 10
 
     # Create a Paginator object
     paginator = Paginator(sale_items, per_page)
@@ -390,7 +400,8 @@ def sale_item_list_view(request):
 
     # Get the Page object for the current page
     page = paginator.get_page(page_number)
-    return render(request, 'pos/sale_item_list.html', {'page': page})
+
+    return render(request, 'pos/sale_item_list.html', {'page': page, 'search_query': search_query})
 
 
 @login_required
@@ -418,3 +429,100 @@ def make_sale_view(request):
     # Get all products
     products = Product.objects.all()
     return render(request, 'pos/make_sale.html', {'products': products})
+
+
+@login_required
+@staff_user_required
+def save_sale_view(request):
+    if request.method == "POST":
+        try:
+            # Get form data
+            product_data = json.loads(request.POST.get('product_data'))
+
+            # Typecasting amounts into decimals
+            grand_total = Decimal(request.POST.get('grand_total'))
+            tendered_amount = Decimal(request.POST.get('tendered_amount'))
+            amount_change = Decimal(request.POST.get('amount_change'))
+
+            # Save the Sale instance
+            sale = Sale(grand_total=grand_total, tendered_amount=tendered_amount, amount_change=amount_change,
+                        created_by=request.user, updated_by=request.user)
+            sale.save()
+
+            for product in product_data:
+                product_id = product['product_id']
+                quantity = int(product['quantity'])
+                related_product = Product.objects.get(id=product_id)  # fetch the related product
+
+                # Create the SaleItem instance
+                sale_item = SaleItem(
+                    sale=sale,
+                    product=related_product,
+                    price=related_product.sell_price,  # Set the sell_price from related product
+                    qty=quantity,
+                    created_by=request.user,
+                    updated_by=request.user
+                )
+                sale_item.save()
+
+            messages.success(request, "Sale saved successfully!")
+            return redirect('pos:dashboard')
+
+        except Exception as e:
+            # Log the exception for debugging (this step is optional but helpful)
+            print(e)
+            # Add a Django error message
+            messages.error(request, f"There was an error processing your request: {str(e)}")
+
+            # Redirect to the sale page
+            return redirect('pos:make-sale')
+
+    else:
+        messages.warning(request, "Invalid request method.")
+        return redirect('pos:make-sale')
+
+
+@login_required
+@staff_user_required
+def sale_list_view(request):
+    sales = Sale.objects.all().select_related('created_by', 'updated_by')
+
+    # Search
+    search_query = request.GET.get('search', '')
+    if search_query:
+        sales = sales.filter(
+            Q(code__icontains=search_query)
+        )
+
+    # Number of sales to display per page
+    per_page = 10
+
+    # Create a Paginator object
+    paginator = Paginator(sales, per_page)
+
+    # Get the current page number from the request's GET parameters
+    page_number = request.GET.get('page')
+
+    # Get the Page object for the current page
+    page = paginator.get_page(page_number)
+
+    return render(request, 'pos/sale_list.html', {'page': page, 'search_query': search_query})
+
+
+@login_required
+@staff_user_required
+def sale_delete_view(request, sale_id):
+    # Ensure only admin can delete
+    if not request.user.is_admin:
+        messages.error(request, "You don't have the permission to delete this sale.")
+        return redirect('pos:sale-list')  # Redirect back to the sale list view
+
+    sale = get_object_or_404(Sale, pk=sale_id)
+
+    if request.method == 'POST':
+        sale.delete()
+        messages.success(request, 'Sale successfully deleted.')
+        return redirect('pos:sale-list')  # Redirect to the sale list view after deletion
+
+    # If the method is not POST, redirect to the list view.
+    return redirect('pos:sale-list')

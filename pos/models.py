@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
 
@@ -49,7 +50,7 @@ class Product(BaseUserTrackModel):
 
 
 class Sale(BaseUserTrackModel):
-    code = models.CharField(max_length=20, unique=True)
+    code = models.CharField(max_length=20, unique=True, blank=True)
     sub_total = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     grand_total = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     tax_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
@@ -60,6 +61,22 @@ class Sale(BaseUserTrackModel):
     def __str__(self):
         return self.code
 
+    def save(self, *args, **kwargs):
+        # Check if amount_change is less than 0
+        if self.amount_change < 0:
+            raise ValidationError("Amount change cannot be less than 0.")
+
+        if not self.code:  # Only set the code if it's not set already.
+            # Get the maximum invoice number in the database.
+            last_sale = Sale.objects.all().order_by('id').last()
+            if last_sale:
+                # Split the code by the hyphen, get the last part (the number), increment by one,
+                # and combine with the prefix again.
+                self.code = "INV-{0}".format(int(last_sale.code.split('-')[1]) + 1)
+            else:
+                self.code = "INV-1001"  # This is the first invoice.
+        super(Sale, self).save(*args, **kwargs)
+
     class Meta:
         ordering = ['-date_updated']
 
@@ -68,7 +85,7 @@ class SaleItem(BaseUserTrackModel):
     sale = models.ForeignKey(Sale, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-    qty = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    qty = models.IntegerField(default=0)
     total = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
     class Meta:

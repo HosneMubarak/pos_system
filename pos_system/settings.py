@@ -37,7 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'account',
     'pos',
-    'django_seed',
+
+    # Third party apps
+    'import_export',
 
 ]
 

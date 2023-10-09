@@ -1,16 +1,52 @@
 from django.contrib import admin
+from import_export import resources
+from import_export.admin import ImportExportModelAdmin
 
 from .models import Category, Product, Sale, SaleItem, StockTransaction
 
 
-class CategoryAdmin(admin.ModelAdmin):
+# Create resources for each model
+class CategoryResource(resources.ModelResource):
+    class Meta:
+        model = Category
+        fields = '__all__'
+
+
+class ProductResource(resources.ModelResource):
+    class Meta:
+        model = Product
+        fields = '__all__'
+
+
+class SaleResource(resources.ModelResource):
+    class Meta:
+        model = Sale
+        fields = '__all__'
+
+
+class SaleItemResource(resources.ModelResource):
+    class Meta:
+        model = SaleItem
+        fields = '__all__'
+
+
+class StockTransactionResource(resources.ModelResource):
+    class Meta:
+        model = StockTransaction
+        fields = '__all__'
+
+
+# Update Admin classes
+class CategoryAdmin(ImportExportModelAdmin):
+    model = Category
     list_display = ('name', 'status', 'date_added', 'date_updated')
     list_filter = ('status',)
     search_fields = ('name', 'description')
     list_per_page = 20
 
 
-class ProductAdmin(admin.ModelAdmin):
+class ProductAdmin(ImportExportModelAdmin):
+    model = Product
     list_display = (
         'code', 'name', 'category', 'buy_price', 'sell_price', 'status', 'date_added', 'date_updated')
     list_filter = ('status', 'category')
@@ -18,19 +54,22 @@ class ProductAdmin(admin.ModelAdmin):
     list_per_page = 20
 
 
-class SaleAdmin(admin.ModelAdmin):
+class SaleAdmin(ImportExportModelAdmin):
+    model = Sale
     list_display = ('code', 'sub_total', 'grand_total', 'date_added', 'date_updated')
     search_fields = ('code',)
     list_per_page = 20
 
 
-class SaleItemAdmin(admin.ModelAdmin):
+class SaleItemAdmin(ImportExportModelAdmin):
+    model = SaleItem
     list_display = ('sale', 'product', 'price', 'qty', 'total')
     list_filter = ('sale', 'product')
     list_per_page = 20
 
 
-class StockTransactionAdmin(admin.ModelAdmin):
+class StockTransactionAdmin(ImportExportModelAdmin):
+    model = StockTransaction
     list_display = ('product', 'transaction_type', 'quantity', 'date_added', 'note')
     list_filter = ('transaction_type', 'product')
     search_fields = ('product__code', 'note')

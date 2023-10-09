@@ -41,6 +41,11 @@
                         <i class="las la-house-damage"></i> <span data-key="t-dashboard">Dashboard</span>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link menu-link" href="{% url 'pos:make-sale' %}">
+                        <i class="las la-book"></i> <span data-key="t-dashboard">Create Sales</span>
+                    </a>
+                </li>
 
                 <li class="menu-title"><i class="ri-more-fill"></i> <span
                         data-key="t-components">Pages</span></li>
@@ -57,21 +62,21 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link menu-link" href="{% url 'pos:make-sale' %}" role="button"
+                    <a class="nav-link menu-link" href="{% url 'pos:sale-list' %}" role="button"
                        aria-expanded="false" aria-controls="sidebarTables">
-                        <i class="las la-book"></i> <span data-key="t-tables">Make Sale</span>
+                        <i class=" las la-money-bill"></i> <span data-key="t-tables">Sale List</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link menu-link" href="{% url 'pos:sale-item-list' %}" role="button"
                        aria-expanded="false" aria-controls="sidebarTables">
-                        <i class=" las la-money-bill"></i> <span data-key="t-tables">Sale</span>
+                        <i class=" las la-money-bill"></i> <span data-key="t-tables">Sale Product List</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link menu-link" href="{% url 'pos:stock-list' %}" role="button"
                        aria-expanded="false" aria-controls="sidebarTables">
-                        <i class=" las la-dolly"></i> <span data-key="t-tables">Stock</span>
+                        <i class=" las la-dolly"></i> <span data-key="t-tables">Stock List</span>
                     </a>
                 </li>
                 <li class="nav-item">
