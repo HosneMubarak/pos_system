@@ -247,10 +247,13 @@
 
                 let productData = getSelectedProductData();
 
-                if (!productData || parseInt(productQuantityInput.value, 10) <= 0) {
-                    alert("Please select a valid product and ensure quantity is greater than 0.");
+                let parsedQuantity = parseInt(productQuantityInput.value, 10);
+
+                if (!productData || isNaN(parsedQuantity) || parsedQuantity <= 0) {
+                    alert("Please select a valid product and ensure quantity is a positive number.");
                     return;
                 }
+
 
                 if (addedProducts.includes(productData.id)) {
                     alert("This product has already been added.");

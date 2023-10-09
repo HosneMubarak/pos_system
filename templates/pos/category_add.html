@@ -65,11 +65,14 @@
                                                        class="form-label">Status</label>
                                                 <select class="form-select" data-trigger name="{{ form.status.name }}"
                                                         id="{{ form.status.id_for_label }}">
+                                                    <option value="" {% if form.status.value == '' %}selected{% endif %}
+                                                            disabled>Select Status
+                                                    </option>
                                                     <option value="1"
-                                                            {% if form.status.value == 1 %}selected{% endif %}>Active
+                                                            {% if form.status.value == '1' %}selected{% endif %}>Active
                                                     </option>
                                                     <option value="0"
-                                                            {% if form.status.value == 0 %}selected{% endif %}>
+                                                            {% if form.status.value == '0' %}selected{% endif %}>
                                                         Inactive
                                                     </option>
                                                 </select>
@@ -107,7 +110,6 @@
                                     </div>
 
                                 </form>
-
                             </div>
                         </div>
                     </div>
@@ -117,5 +119,3 @@
         <!-- container-fluid -->
     </div>
 {% endblock %}
-
-

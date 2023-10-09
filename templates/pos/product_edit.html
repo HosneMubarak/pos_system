@@ -83,7 +83,7 @@
                                                         id="{{ form.category.id_for_label }}">
                                                     {% for category in categories %}
                                                         <option value="{{ category.id }}"
-                                                                {% if form.category.value == category.id|stringformat:"s" %}selected{% endif %}>
+                                                                {% if form.category.value == category.id %}selected{% endif %}>
                                                             {{ category.name }}
                                                         </option>
                                                     {% endfor %}
