@@ -81,7 +81,7 @@
                                                         <li>
                                                             <a href="#" class="dropdown-item remove-item-btn delete-btn"
                                                                data-id="{{ sale.id }}"
-                                                               data-name="{{ sale.code }}"
+                                                               data-name="{{ sale.product }}"
                                                                data-bs-toggle="modal" data-bs-target="#staticBackdrop">
                                                                 <i class="las la-trash-alt fs-18 align-middle me-2 text-muted"></i>
                                                                 Delete
@@ -150,7 +150,6 @@
                 button.addEventListener('click', function (event) {
                     const dataName = event.target.getAttribute('data-name');
                     const dataId = event.target.getAttribute('data-id');
-
                     dataNameElement.textContent = dataName;  // Populate modal with name
 
                     // Update the form's action to point to the delete view
