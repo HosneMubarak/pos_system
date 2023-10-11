@@ -53,8 +53,10 @@
                     <button type="button" class="btn" id="page-header-user-dropdown" data-bs-toggle="dropdown"
                             aria-haspopup="true" aria-expanded="false">
                         <span class="d-flex align-items-center">
+                            <img class="rounded-circle header-profile-user"
+                                 src="{% static 'assets/images/users/user-dummy-img.jpg' %}" alt="Header Avatar">
                             <span class="text-start ms-xl-2">
-                                <span class="d-none d-xl-inline-block fw-medium user-name-text fs-16">{{ request.user.email }}<i
+                                <span class="d-none d-xl-inline-block fw-medium user-name-text fs-16">{{ request.user.username }}<i
                                         class="las la-angle-down fs-12 ms-1"></i></span>
                             </span>
                         </span>
