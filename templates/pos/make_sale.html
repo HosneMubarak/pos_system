@@ -181,6 +181,27 @@
         <!-- container-fluid -->
     </div>
     <!-- End Page-content -->
+    <div class="modal fade bs-example-modal-center" id="customModal" tabindex="-1" role="dialog"
+         aria-labelledby="customModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body text-center p-5">
+                    <lord-icon src="https://cdn.lordicon.com/hrqwmuhr.json" trigger="loop"
+                               colors="primary:#121331,secondary:#08a88a" style="width:120px;height:120px"></lord-icon>
+                    <div class="mt-4">
+                        <h4 class="mb-3" id="customModalLabel">Oops something went wrong!</h4>
+                        <p class="text-bold mb-4" id="customModalMessage"></p>
+                        <div class="hstack gap-2 justify-content-center">
+                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                            <a href="javascript:void(0);" class="btn btn-danger" data-bs-dismiss="modal"
+                               id="customModalTryAgain">Try Again</a>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+
 {% endblock %}
 
 {% block extra_js %}
@@ -250,18 +271,18 @@
                 let parsedQuantity = parseInt(productQuantityInput.value, 10);
 
                 if (!productData || isNaN(parsedQuantity) || parsedQuantity <= 0) {
-                    alert("Please select a valid product and ensure quantity is a positive number.");
+                    showModal("Please select a valid product and ensure quantity is a positive number.");
                     return;
                 }
 
 
                 if (addedProducts.includes(productData.id)) {
-                    alert("This product has already been added.");
+                    showModal("This product has already been added.");
                     return;
                 }
 
                 if (productData.stock < parseInt(productQuantityInput.value, 10)) {
-                    alert(`Sorry, there are only ${productData.stock} items in stock for ${productSearchInput.value}.`);
+                    showModal(`Sorry, there are only ${productData.stock} items in stock for ${productSearchInput.value}.`);
                     return;
                 }
 
@@ -359,5 +380,26 @@
             });
 
         });
+
+        function showModal(message) {
+            const customModalLabel = document.getElementById('customModalLabel');
+            const customModalMessage = document.getElementById('customModalMessage');
+            const customModalTryAgain = document.getElementById('customModalTryAgain');
+
+            // Set the message in the modal
+            customModalMessage.textContent = message;
+
+            // Show the modal
+            const customModal = new bootstrap.Modal(document.getElementById('customModal'));
+            customModal.show();
+
+            // Close the modal when "Try Again" is clicked
+            customModalTryAgain.addEventListener('click', function () {
+                customModal.hide();
+            });
+        }
+
+
     </script>
+
 {% endblock %}
