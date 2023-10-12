@@ -15,6 +15,12 @@ class ProductForm(forms.ModelForm):
         fields = ['code', 'category', 'name', 'description', 'buy_price', 'sell_price', 'status']
 
 
+class PaymentTypeForm(forms.ModelForm):
+    class Meta:
+        model = PaymentType
+        fields = ['name', 'description']
+
+
 class SaleForm(forms.ModelForm):
     class Meta:
         model = Sale

@@ -61,10 +61,18 @@
                         <i class="las la-list"></i> <span data-key="t-tables">Category List</span>
                     </a>
                 </li>
+                {% if request.user.is_admin or request.user.is_superuser %}
+                    <li class="nav-item">
+                        <a class="nav-link menu-link" href="{% url 'pos:payment_type-list' %}" role="button"
+                           aria-expanded="false" aria-controls="sidebarTables">
+                            <i class="las la-list"></i> <span data-key="t-tables">PaymentType List</span>
+                        </a>
+                    </li>
+                {% endif %}
                 <li class="nav-item">
                     <a class="nav-link menu-link" href="{% url 'pos:sale-list' %}" role="button"
                        aria-expanded="false" aria-controls="sidebarTables">
-                        <i class=" las la-money-bill"></i> <span data-key="t-tables">Sale List</span>
+                        <i class=" las la-money-bill"></i> <span data-key="t-tables">Invoice List</span>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -89,7 +97,7 @@
                     <li class="nav-item">
                         <a class="nav-link menu-link" href="{% url 'account:user-list' %}" role="button"
                            aria-expanded="false" aria-controls="sidebarTables">
-                            <i class="las la-user-tie"></i> <span data-key="t-tables">User</span>
+                            <i class="las la-user-tie"></i> <span data-key="t-tables">User List</span>
                         </a>
                     </li>
                 {% endif %}

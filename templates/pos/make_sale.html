@@ -133,6 +133,19 @@
                                                                    id="cart-total" placeholder="0.00" readonly/>
                                                         </td>
                                                     </tr>
+                                                    <tr>
+                                                        <th scope="row">Payment Type</th>
+                                                        <td colspan="2">
+                                                            <select class="form-control bg-light border-0"
+                                                                    name="payment_type" id="payment_type" required>
+                                                                <option value="" disabled selected>Select Payment Type
+                                                                </option>
+                                                                {% for payment_type in payment_types %}
+                                                                    <option value="{{ payment_type.id }}">{{ payment_type.name }}</option>
+                                                                {% endfor %}
+                                                            </select>
+                                                        </td>
+                                                    </tr>
                                                     <tr class="mt-2 border-top border-1 border-top-dashed"></tr>
                                                     <tr>
                                                         <th scope="row">Amount Tendered</th>
@@ -164,7 +177,7 @@
                                 </div>
                                 <!--end row-->
                                 <div class="hstack gap-2 justify-content-end d-print-none mt-4">
-                                    <button type="submit" class="btn btn-primary">
+                                    <button type="submit" class="btn btn-primary checkout-btn">
                                         <i class="ri-shopping-cart-2-fill align-bottom me-1"></i>Checkout Complete
                                     </button>
                                 </div>
@@ -184,11 +197,13 @@
 
 {% endblock %}
 
+
 {% block extra_js %}
     <script type="text/javascript">
         document.addEventListener('DOMContentLoaded', function () {
 
-            let addedProducts = []; // Array to keep track of added products
+            // Reference to the checkout button
+            const checkoutButton = document.querySelector(".checkout-btn");
 
             function getSelectedProductData() {
                 let selectedName = document.getElementById('productSearch-1').value;
@@ -217,6 +232,22 @@
 
                 document.getElementById('cart-total').value = totalAmount.toFixed(2);
             }
+
+            document.getElementById('payment_type').addEventListener('change', function () {
+                const selectedPaymentTypeName = this.options[this.selectedIndex].textContent.trim();
+                const tenderedAmountInput = document.getElementById('tendered-ammount');
+                const totalAmountInput = document.getElementById('cart-total');
+                const changeAmountInput = document.getElementById('change-aamount');
+
+                if (selectedPaymentTypeName !== "Cash") {
+                    tenderedAmountInput.value = totalAmountInput.value;
+                    changeAmountInput.value = "0.00";
+                } else {
+                    tenderedAmountInput.value = 0.00;
+                    changeAmountInput.value = (parseFloat(tenderedAmountInput.value) - parseFloat(totalAmountInput.value)).toFixed(2);
+                }
+            });
+
 
             document.getElementById('productSearch-1').addEventListener('change', function () {
                 let selectedName = this.value;
@@ -255,18 +286,17 @@
                     return;
                 }
 
+                let currentAddedQuantity = Array.from(tbody.querySelectorAll('.product')).reduce((acc, row) => {
+                    if (row.querySelector('.product-id p').textContent.trim() === productData.id) {
+                        acc += parseInt(row.querySelector('[data-quantity]').textContent.trim(), 10);
+                    }
+                    return acc;
+                }, 0);
 
-                if (addedProducts.includes(productData.id)) {
-                    showModal("This product has already been added.");
-                    return;
-                }
-
-                if (productData.stock < parseInt(productQuantityInput.value, 10)) {
+                if (productData.stock < parsedQuantity + currentAddedQuantity) {
                     showModal(`Sorry, there are only ${productData.stock} items in stock for ${productSearchInput.value}.`);
                     return;
                 }
-
-                addedProducts.push(productData.id); // Add product ID to the addedProducts array
 
                 let productName = productSearchInput.value;
                 let sellPrice = productData.price;
@@ -311,10 +341,6 @@
                 newRow.querySelector('.remove-button').addEventListener('click', function (event) {
                     event.preventDefault();
                     tbody.removeChild(newRow);
-                    const index = addedProducts.indexOf(productData.id);
-                    if (index > -1) {
-                        addedProducts.splice(index, 1); // Remove the product ID from the addedProducts array
-                    }
                     calculateTotalAmount();
                 });
 
@@ -328,14 +354,21 @@
                 // Get the tendered amount from user input
                 let tenderedAmount = parseFloat(this.value) || 0;
 
-                // Get the total cart amount (since it's a number now, no need for string manipulation)
+                // Get the total cart amount
                 let totalCartAmount = parseFloat(document.getElementById('cart-total').value) || 0;
 
                 // Calculate the change
                 let change = tenderedAmount - totalCartAmount;
 
-                // Set the calculated change in the change-aamount input
+                // Set the calculated change in the change-amount input
                 document.getElementById('change-aamount').value = change.toFixed(2);
+
+                // If the change amount is less than 0, disable the checkout button
+                if (change < 0) {
+                    checkoutButton.setAttribute("disabled", "disabled");
+                } else {
+                    checkoutButton.removeAttribute("disabled");
+                }
             });
 
             document.getElementById('invoice_form').addEventListener('submit', function (e) {
@@ -378,7 +411,6 @@
                 customModal.hide();
             });
         }
-
 
     </script>
 

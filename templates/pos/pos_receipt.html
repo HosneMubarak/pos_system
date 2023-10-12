@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Receipt</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 100%; /* Adjust the max-width to fill the entire page */
+            margin: 0 auto;
+            padding: 20px; /* Add some spacing around the content */
+        }
+
+        .header {
+            text-align: center;
+            font-size: 18pt; /* Increase the font size */
+            margin-bottom: 20px; /* Adjust margin for spacing */
+        }
+
+        .store-info {
+            font-size: 14pt; /* Increase the font size */
+            margin-bottom: 20px; /* Adjust margin for spacing */
+            text-align: center;
+        }
+
+        .order-details, .item-list, .totals, .payment-info {
+            font-size: 14pt; /* Increase the font size */
+            margin-bottom: 20px; /* Adjust margin for spacing */
+            text-align: left; /* Adjust text alignment */
+        }
+
+        .totals, .payment-info {
+            text-align: right; /* Align to the right */
+        }
+
+        table {
+            width: 100%;
+        }
+
+        th:last-child, td:last-child {
+            text-align: right; /* Align the last column (Total) to the right */
+        }
+
+        .footer {
+            font-size: 14pt; /* Increase the font size */
+            text-align: center; /* Center-align the footer */
+            margin-top: 20px; /* Add spacing at the top */
+        }
+
+        @media print {
+            body {
+                font-size: 14pt; /* Adjust the font size for print */
+            }
+
+            .container {
+                max-width: 100%;
+                margin-left: auto; /* Center-align the content */
+                margin-right: auto; /* Center-align the content */
+            }
+
+            .header, .order-details, .item-list, .totals, .payment-info, .footer {
+                width: 100%;
+                text-align: left;
+                margin-left: auto; /* Center-align elements by setting left margin to auto */
+                margin-right: auto; /* Center-align elements by setting right margin to auto */
+            }
+
+            table {
+                width: 100%;
+            }
+
+            th:last-child, td:last-child {
+                text-align: right; /* Align the last column (Total) to the right for print */
+            }
+
+            /* Add any other specific styles for printing as needed */
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <p>Your Store Name</p>
+    </div>
+    <div class="footer">
+        <p>Store Address Line 1</p>
+    </div>
+    <div class="order-details">
+        <p>Date: 2023-10-12 14:30:00</p>
+        <p>Order #: 12345</p>
+        <p>Cashier: John Doe</p>
+    </div>
+    <div class="item-list">
+        <table>
+            <tr>
+                <th>Item</th>
+                <th>Qty</th>
+                <th>Price</th>
+                <th>Total</th>
+            </tr>
+            <tr>
+                <td>Item 1</td>
+                <td>2</td>
+                <td>$5.99</td>
+                <td align="right">$11.98</td> <!-- Align Total to the right -->
+            </tr>
+            <tr>
+                <td>Item 2</td>
+                <td>1</td>
+                <td>$9.99</td>
+                <td align="right">$9.99</td> <!-- Align Total to the right -->
+            </tr>
+            <tr>
+                <td>Item 3</td>
+                <td>3</td>
+                <td>$2.49</td>
+                <td align="right">$7.47</td> <!-- Align Total to the right -->
+            </tr>
+        </table>
+    </div>
+    <div class="totals">
+        <p>Subtotal: $29.44</p>
+        <p>Tax (7%): $2.06</p>
+        <p>Total: $31.50</p>
+    </div>
+    <div class="payment-info">
+        <p>Payment Method: Credit Card</p>
+    </div>
+    <div class="footer">
+        <p>Thank you for shopping with us!</p>
+        <p>Please come again.</p>
+    </div>
+</div>
+<!-- Add this button to your receipt template -->
+<button onclick="printReceipt()">Print Receipt</button>
+<script>
+    function printReceipt() {
+        window.print();
+    }
+</script>
+</body>
+</html>

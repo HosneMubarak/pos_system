@@ -1,0 +1,96 @@
+{% extends 'dashboard_base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="page-content">
+        <div class="container-fluid">
+            {% include 'base_message.html' %}
+            <!-- start page title -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                        <h4 class="mb-sm-0">Update Payment Type</h4>
+
+                        <div class="page-title-right">
+                            <ol class="breadcrumb m-0">
+                                <li class="breadcrumb-item"><a href="{% url 'pos:payment_type-list' %}">Payment Type</a>
+                                </li>
+                                <li class="breadcrumb-item active">Update Payment Type</li>
+                            </ol>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <!-- end page title -->
+
+            <div class="row">
+                <div class="col-xl-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="p-2">
+                                <form method="post">
+                                    {% csrf_token %}
+
+                                    <!-- Display non-field specific errors -->
+                                    {% if form.non_field_errors %}
+                                        <div class="alert alert-danger">
+                                            {% for error in form.non_field_errors %}
+                                                <p>{{ error }}</p>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label" for="{{ form.name.id_for_label }}">Payment
+                                                    Type Name</label>
+                                                <input id="{{ form.name.id_for_label }}" name="{{ form.name.name }}"
+                                                       placeholder="Enter Payment Type Name" type="text"
+                                                       class="form-control"
+                                                       value="{{ form.name.value|default:'' }}">
+                                                <!-- Display field-specific errors -->
+                                                {% if form.name.errors %}
+                                                    <div class="text-danger">
+                                                        {% for error in form.name.errors %}
+                                                            <p>{{ error }}</p>
+                                                        {% endfor %}
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label" for="{{ form.description.id_for_label }}">Payment Type
+                                            Description</label>
+                                        <textarea class="form-control" id="{{ form.description.id_for_label }}"
+                                                  name="{{ form.description.name }}" placeholder="Enter Description"
+                                                  rows="4">{{ form.description.value|default:'' }}</textarea>
+                                        <!-- Display field-specific errors -->
+                                        {% if form.description.errors %}
+                                            <div class="text-danger">
+                                                {% for error in form.description.errors %}
+                                                    <p>{{ error }}</p>
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="hstack gap-2 mt-4">
+                                        <button type="submit" class="btn btn-primary">Update</button>
+                                        <a href="{% url 'pos:payment_type-list' %}" class="btn btn-light">Discard</a>
+                                    </div>
+
+                                </form>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- container-fluid -->
+    </div>
+{% endblock %}
