@@ -73,6 +73,10 @@ def custom_logout(request):
 @login_required
 @staff_user_required
 def user_list_view(request):
+    # Ensure only admin can add categories
+    if not request.user.is_admin and not request.user.is_superuser:
+        messages.error(request, "You don't have the permission to add categories.")
+        return redirect('pos:category-list')  # Redirect back to the category list view if not admin
     User = get_user_model()
     users = User.objects.all()
 

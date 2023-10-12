@@ -103,6 +103,11 @@ def category_list_view(request):
 @login_required
 @staff_user_required
 def category_add_view(request):
+    # Ensure only admin can add categories
+    if not request.user.is_admin:
+        messages.error(request, "You don't have the permission to add categories.")
+        return redirect('pos:category-list')  # Redirect back to the category list view if not admin
+
     if request.method == 'POST':
         form = CategoryForm(request.POST)
         if form.is_valid():
@@ -123,6 +128,11 @@ def category_add_view(request):
 @login_required
 @staff_user_required
 def category_edit_view(request, category_id):
+    # Ensure only admin can edit categories
+    if not request.user.is_admin:
+        messages.error(request, "You don't have the permission to edit this category.")
+        return redirect('pos:category-list')  # Redirect back to the category list view if not admin
+
     category = get_object_or_404(Category, pk=category_id)
 
     if request.method == 'POST':
@@ -203,6 +213,10 @@ def product_list_view(request):
 @login_required
 @staff_user_required
 def product_add_view(request):
+    # Ensure only admin can edit
+    if not request.user.is_admin:
+        messages.error(request, "You don't have the permission to edit this product.")
+        return redirect('pos:product-list')  # Redirect back to the product list view if not admin
     categories = Category.objects.all()
     if request.method == 'POST':
         form = ProductForm(request.POST)
@@ -224,8 +238,14 @@ def product_add_view(request):
 @login_required
 @staff_user_required
 def product_edit_view(request, product_id):
+    # Ensure only admin can edit
+    if not request.user.is_admin:
+        messages.error(request, "You don't have the permission to edit this product.")
+        return redirect('pos:product-list')  # Redirect back to the product list view if not admin
+
     product = get_object_or_404(Product, pk=product_id)
     categories = Category.objects.all()
+
     if request.method == 'POST':
         form = ProductForm(request.POST, instance=product)
         if form.is_valid():

@@ -85,12 +85,14 @@
                         <i class=" las la-box"></i> <span data-key="t-tables">Manage Stock</span>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link menu-link" href="{% url 'account:user-list' %}" role="button"
-                       aria-expanded="false" aria-controls="sidebarTables">
-                        <i class="las la-user-tie"></i> <span data-key="t-tables">User</span>
-                    </a>
-                </li>
+                {% if request.user.is_admin or request.user.is_superuser %}
+                    <li class="nav-item">
+                        <a class="nav-link menu-link" href="{% url 'account:user-list' %}" role="button"
+                           aria-expanded="false" aria-controls="sidebarTables">
+                            <i class="las la-user-tie"></i> <span data-key="t-tables">User</span>
+                        </a>
+                    </li>
+                {% endif %}
             </ul>
         </div>
         <!-- Sidebar -->

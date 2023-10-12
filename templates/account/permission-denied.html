@@ -15,6 +15,7 @@
                                     </span>
                                 </a>
                             </div>
+                            {% include 'base_message.html' %}
                             <div class="card my-auto overflow-hidden">
                                 <div class="row g-0">
                                     <div class="col-lg-12">
@@ -26,6 +27,14 @@
                                                     dashboard.</h3>
                                                 <h4 class="text-muted text-primary">Please contact the administrator for
                                                     assistance.</h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <div class="text-center pb-4">
+                                            <div>
+                                                <a href="{% url 'account:logout' %}"
+                                                   class="btn btn-soft-info">Logout</a>
                                             </div>
                                         </div>
                                     </div>

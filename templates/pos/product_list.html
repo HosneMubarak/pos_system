@@ -60,7 +60,9 @@
                                         <th scope="col">category</th>
                                         <th scope="col">name</th>
                                         <th scope="col">stock</th>
-                                        <th scope="col">buy_price</th>
+                                        {% if request.user.is_admin or request.user.is_superuser %}
+                                            <th scope="col">buy_price</th>
+                                        {% endif %}
                                         <th scope="col">sell_price</th>
                                         <th scope="col">status</th>
                                         <th scope="col">Date added</th>
@@ -76,7 +78,9 @@
                                             <td>{{ product.category }}</td>
                                             <td>{{ product.name }}</td>
                                             <td>{{ product.stock }}</td>
-                                            <td>{{ product.buy_price }}</td>
+                                            {% if request.user.is_admin or request.user.is_superuser %}
+                                                <td>{{ product.buy_price }}</td>
+                                            {% endif %}
                                             <td>{{ product.sell_price }}</td>
                                             <td><span
                                                     class="badge bg-success-subtle {% if product.status == 1 %}text-success{% else %}text-danger{% endif %} p-2">{% if product.status == 1 %}

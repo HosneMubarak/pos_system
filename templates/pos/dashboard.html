@@ -70,19 +70,24 @@
                                     </a>
                                 </div>
 
-                                <div class="col-lg-6 mini-widget py-3 py-lg-0">
-                                    <a href="{% url 'pos:sale-list' %}">
-                                        <div class="d-flex align-items-end">
-                                            <div class="flex-grow-1">
-                                                <h2 class="mb-0 fs-24"><i class="las la-dollar-sign"></i><span
-                                                        class="counter-value"
-                                                        data-target="{{ sales_amount_for_interval }}">{{ sales_amount_for_interval }}</span>
-                                                </h2>
-                                                <h5 class="text-muted fs-16 mt-2 mb-0">Total Sales Amount</h5>
+                                {% if request.user.is_admin or request.user.is_superuser %}
+                                    <div class="col-lg-6 mini-widget py-3 py-lg-0">
+                                        <a href="{% url 'pos:sale-list' %}">
+                                            <div class="d-flex align-items-end">
+                                                <div class="flex-grow-1">
+                                                    <h2 class="mb-0 fs-24"><i class="las la-dollar-sign"></i><span
+                                                            class="counter-value"
+                                                            data-target="{{ sales_amount_for_interval }}">{{ sales_amount_for_interval }}</span>
+                                                    </h2>
+                                                    <h5 class="text-muted fs-16 mt-2 mb-0">Total Sales Amount</h5>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </a>
-                                </div>
+                                        </a>
+                                    </div>
+                                {% else %}
+                                    <div class="col-lg-6 mini-widget py-3 py-lg-0">
+                                    </div>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
