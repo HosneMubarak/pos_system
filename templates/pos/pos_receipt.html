@@ -6,142 +6,172 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
         }
 
-        .container {
-            max-width: 100%; /* Adjust the max-width to fill the entire page */
+        #invoice-POS {
+            box-shadow: 0 0 1in -0.25in rgba(0, 0, 0, 0.5);
+            padding: 20px;
             margin: 0 auto;
-            padding: 20px; /* Add some spacing around the content */
+            width: 300px;
+            background: #FFF;
         }
 
-        .header {
-            text-align: center;
-            font-size: 18pt; /* Increase the font size */
-            margin-bottom: 20px; /* Adjust margin for spacing */
+        h1 {
+            font-size: 1.5em;
+            color: #222;
+        {#text-align: center;#}
         }
 
-        .store-info {
-            font-size: 14pt; /* Increase the font size */
-            margin-bottom: 20px; /* Adjust margin for spacing */
-            text-align: center;
+        h2 {
+            font-size: 1em;
         }
 
-        .order-details, .item-list, .totals, .payment-info {
-            font-size: 14pt; /* Increase the font size */
-            margin-bottom: 20px; /* Adjust margin for spacing */
-            text-align: left; /* Adjust text alignment */
+        h3 {
+            font-size: 1.2em;
+            font-weight: 300;
+            line-height: 2em;
         }
 
-        .totals, .payment-info {
-            text-align: right; /* Align to the right */
+        p {
+            font-size: 0.8em;
+            color: #666;
+            line-height: 1.2em;
+        }
+
+        #top, #mid, #bot {
+            border-bottom: 1px solid #EEE;
+        }
+
+        #top {
+            min-height: 100px;
+        }
+
+        #mid {
+            min-height: 80px;
+        }
+
+        #bot {
+            min-height: 50px;
+        }
+
+        .logo {
+            float: left;
+            height: 60px;
+            width: 60px;
+            background-size: 60px 60px;
+        }
+
+        .clientlogo {
+            float: left;
+            height: 60px;
+            width: 60px;
+            background-size: 60px 60px;
+            border-radius: 50px;
+        }
+
+        .info {
+            display: block;
+        }
+
+        .title {
+            text-align: right;
+        }
+
+        .title p {
+            text-align: right;
         }
 
         table {
             width: 100%;
+            border-collapse: collapse;
         }
 
-        th:last-child, td:last-child {
-            text-align: right; /* Align the last column (Total) to the right */
+        td {
+            padding: 5px 0 5px 15px;
+            border: 1px solid #EEE;
         }
 
-        .footer {
-            font-size: 14pt; /* Increase the font size */
-            text-align: center; /* Center-align the footer */
-            margin-top: 20px; /* Add spacing at the top */
+        .tabletitle {
+            font-size: 0.9em;
+            background: #EEE;
+        }
+
+        .service {
+            border-bottom: 1px solid #EEE;
+        }
+
+        .item {
+            width: 33.33%;
+        }
+
+        .itemtext {
+            font-size: 0.9em;
+        }
+
+        #legalcopy {
+            margin-top: 5mm;
         }
 
         @media print {
-            body {
-                font-size: 14pt; /* Adjust the font size for print */
+            .no-print {
+                display: none;
             }
 
-            .container {
-                max-width: 100%;
-                margin-left: auto; /* Center-align the content */
-                margin-right: auto; /* Center-align the content */
-            }
-
-            .header, .order-details, .item-list, .totals, .payment-info, .footer {
-                width: 100%;
-                text-align: left;
-                margin-left: auto; /* Center-align elements by setting left margin to auto */
-                margin-right: auto; /* Center-align elements by setting right margin to auto */
-            }
-
-            table {
-                width: 100%;
-            }
-
-            th:last-child, td:last-child {
-                text-align: right; /* Align the last column (Total) to the right for print */
-            }
-
-            /* Add any other specific styles for printing as needed */
         }
     </style>
 </head>
 <body>
-<div class="container">
-    <div class="header">
-        <p>Your Store Name</p>
+<div id="invoice-POS">
+    <div class="logo"></div>
+    <div id="mid">
+        <div class="info">
+            <h1>ELUXGO EMPIRE</h1>
+            <p>KSL CITY MALL, Malaysia</p>
+            <p>Date: {{ sale.date_added|date:"Y-m-d H:i:s" }}</p>
+            <p>Order #: {{ sale.code }}</p>
+            <p>Cashier: {{ sale.created_by.username }}</p>
+        </div>
     </div>
-    <div class="footer">
-        <p>Store Address Line 1</p>
-    </div>
-    <div class="order-details">
-        <p>Date: 2023-10-12 14:30:00</p>
-        <p>Order #: 12345</p>
-        <p>Cashier: John Doe</p>
-    </div>
-    <div class="item-list">
-        <table>
-            <tr>
-                <th>Item</th>
-                <th>Qty</th>
-                <th>Price</th>
-                <th>Total</th>
-            </tr>
-            <tr>
-                <td>Item 1</td>
-                <td>2</td>
-                <td>$5.99</td>
-                <td align="right">$11.98</td> <!-- Align Total to the right -->
-            </tr>
-            <tr>
-                <td>Item 2</td>
-                <td>1</td>
-                <td>$9.99</td>
-                <td align="right">$9.99</td> <!-- Align Total to the right -->
-            </tr>
-            <tr>
-                <td>Item 3</td>
-                <td>3</td>
-                <td>$2.49</td>
-                <td align="right">$7.47</td> <!-- Align Total to the right -->
-            </tr>
-        </table>
-    </div>
-    <div class="totals">
-        <p>Subtotal: $29.44</p>
-        <p>Tax (7%): $2.06</p>
-        <p>Total: $31.50</p>
-    </div>
-    <div class="payment-info">
-        <p>Payment Method: Credit Card</p>
-    </div>
-    <div class="footer">
-        <p>Thank you for shopping with us!</p>
-        <p>Please come again.</p>
+
+    <div id="bot">
+        <div id="table">
+            <table>
+                <tr class="tabletitle">
+                    <td class="item"><h2>Item</h2></td>
+                    <td class="Hours"><h2>Qty</h2></td>
+                    <td class="Rate"><h2>Sub Total</h2></td>
+                </tr>
+                {% for item in sales_items %}
+                    <tr class="service">
+                        <td class="tableitem"><p class="itemtext">{{ item.product.name }}</p></td>
+                        <td class="tableitem"><p class="itemtext">{{ item.qty }}</p></td>
+                        <td class="tableitem"><p class="itemtext">${{ item.total }}</p></td>
+                    </tr>
+                {% endfor %}
+                <tr class="tabletitle">
+                    <td></td>
+                    <td class="Rate"><h2>tax</h2></td>
+                    <td class="payment"><h2>${{ sale.tax_amount }}</h2></td>
+                </tr>
+            </table>
+        </div>
+        <div class="border-top border-top-dashed mt-2">
+            <table class="table table-borderless table-nowrap align-middle mb-0 ms-auto" style="width:250px">
+                <tbody>
+                <tr class="border-top border-top-dashed fs-15">
+                    <th scope="row">Total Amount</th>
+                    <th class="text-end">${{ sale.grand_total }}</th>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="no-print" style="margin-top: 20px; text-align: center">
+            <a href="javascript:window.print()" class="btn btn-info"><i class="ri-printer-line align-bottom me-1"></i>
+                Print</a>
+            <a href="{% url 'pos:sale-list' %}" class="btn btn-primary"><i
+                    class="ri-close-circle-fill align-bottom me-1"></i> Close</a>
+        </div>
     </div>
 </div>
-<!-- Add this button to your receipt template -->
-<button onclick="printReceipt()">Print Receipt</button>
-<script>
-    function printReceipt() {
-        window.print();
-    }
-</script>
 </body>
 </html>

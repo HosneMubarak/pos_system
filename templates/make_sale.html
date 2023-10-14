@@ -1,0 +1,418 @@
+{% extends 'dashboard_base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="page-content">
+        <div class="container-fluid">
+            {% include 'base_message.html' %}
+            <!-- start page title -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                        <h4 class="mb-sm-0">Create Invoice</h4>
+
+                        <div class="page-title-right">
+                            <ol class="breadcrumb m-0">
+                                <li class="breadcrumb-item"><a href="{% url 'pos:dashboard' %}">Dashboard</a></li>
+                                <li class="breadcrumb-item active">Create Invoice</li>
+                            </ol>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <!-- end page title -->
+
+            <div class="row justify-content-center">
+                <div class="col-xxl-9">
+                    <div class="card">
+                        <form class="needs-validation" action="{% url 'pos:save_sale' %}" method="post"
+                              id="invoice_form">
+                            {% csrf_token %}
+                            <input type="hidden" name="product_data" id="hidden_product_data">
+                            <input type="hidden" name="grand_total" id="hidden_grand_total">
+                            <input type="hidden" name="tendered_amount" id="hidden_tendered_amount">
+                            <input type="hidden" name="amount_change" id="hidden_amount_change">
+
+                            <div class="card-body p-4 border-top border-top-dashed">
+                                <div class="card-body p-4">
+                                    <div class="table-responsive">
+                                        <table class="invoice-table table table-borderless table-nowrap mb-0">
+                                            <thead class="align-middle">
+                                            <tr class="table-active">
+                                                <th scope="col">
+                                                    Product Name
+                                                </th>
+                                                <th scope="col" style="width: 120px;">Quantity</th>
+                                                <th scope="col" class="text-end" style="width: 105px;"></th>
+                                            </tr>
+                                            </thead>
+                                            <tbody id="">
+                                            <tr id="" class="product">
+                                                <td class="text-start">
+                                                    <div class="mb-2">
+                                                        <!-- Search Input with DataList -->
+                                                        <input list="product-datalist"
+                                                               class="form-control bg-light border-0"
+                                                               placeholder="Search Product..." id="productSearch-1">
+
+                                                        <datalist id="product-datalist">
+                                                            {% for product in products %}
+                                                                <option value="{{ product.name }}"
+                                                                        data-id="{{ product.id }}"
+                                                                        data-price="{{ product.sell_price }}"
+                                                                        data-stock="{{ product.stock }}"></option>
+                                                            {% endfor %}
+                                                        </datalist>
+
+
+                                                        <!-- Hidden Select for Storing Selected Product ID -->
+                                                        <select class="form-control bg-light border-0 mt-2"
+                                                                name="product_name" id="productName-1" hidden>
+                                                            <option value="" disabled selected>Select Product</option>
+                                                            {% for product in products %}
+                                                                <option value="{{ product.id }}">{{ product.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                </td>
+
+                                                <td>
+                                                    <div class="input-step">
+                                                        <button type="button" class='minus'>–</button>
+                                                        <input type="number" class="product-quantity" id="product-qty-1"
+                                                               value="0">
+                                                        <button type="button" class='plus'>+</button>
+                                                    </div>
+                                                </td>
+                                                <td colspan="5">
+                                                    <a href="javascript:new_link()" id="add-item"
+                                                       class="btn btn-soft-secondary fw-medium"><i
+                                                            class="ri-add-fill me-1 align-bottom"></i> Add Item</a>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                        <!--end table-->
+                                    </div>
+                                    <!--end row-->
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="card-body p-4">
+                                <div class="table-responsive">
+                                    <table class="invoice-table table table-borderless table-nowrap mb-0">
+                                        <thead class="align-middle">
+                                        <tr class="table-active">
+                                            <th scope="col" style="width: 50px;">#</th>
+                                            <th scope="col">
+                                                Product Details
+                                            </th>
+                                            <th scope="col" style="width: 120px;">
+                                                <div class="d-flex currency-select input-light align-items-center">
+                                                    Rate ($)
+                                                </div>
+                                            </th>
+                                            <th scope="col" style="width: 120px;">Quantity</th>
+                                            <th scope="col" class="text-end" style="width: 120px;">Amount</th>
+                                            <th scope="col" class="text-end" style="width: 105px;"></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody id="newlink">
+                                        </tbody>
+                                        <tbody>
+                                        <tr class="border-top border-top-dashed mt-2">
+                                            <td colspan="3"></td>
+                                            <td colspan="2" class="p-0">
+                                                <table class="table table-borderless table-sm table-nowrap align-middle mb-0">
+                                                    <tbody>
+                                                    <tr class="border-top border-top-dashed">
+                                                        <th scope="row">Total Amount</th>
+                                                        <td>
+                                                            <input type="number" class="form-control bg-light border-0"
+                                                                   id="cart-total" placeholder="0.00" readonly/>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row">Payment Type</th>
+                                                        <td colspan="2">
+                                                            <select class="form-control bg-light border-0"
+                                                                    name="payment_type" id="payment_type" required>
+                                                                <option value="" disabled selected>Select Payment Type
+                                                                </option>
+                                                                {% for payment_type in payment_types %}
+                                                                    <option value="{{ payment_type.id }}">{{ payment_type.name }}</option>
+                                                                {% endfor %}
+                                                            </select>
+                                                        </td>
+                                                    </tr>
+                                                    <tr class="mt-2 border-top border-1 border-top-dashed"></tr>
+                                                    <tr>
+                                                        <th scope="row">Amount Tendered</th>
+                                                        <td style="width:150px;">
+                                                            <input type="number" class="form-control bg-light border-0"
+                                                                   id="tendered-ammount" placeholder="$0.00" required/>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row">Change Ammount</th>
+                                                        <td>
+                                                            <input type="number" class="form-control bg-light border-0"
+                                                                   id="change-aamount" placeholder="$0.00" readonly/>
+                                                        </td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                                <!--end table-->
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                    <!--end table-->
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col-lg-4">
+                                    </div>
+                                    <!--end col-->
+                                </div>
+                                <!--end row-->
+                                <div class="hstack gap-2 justify-content-end d-print-none mt-4">
+                                    <button type="submit" class="btn btn-primary checkout-btn">
+                                        <i class="ri-shopping-cart-2-fill align-bottom me-1"></i>Checkout Complete
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <!--end col-->
+            </div>
+            <!--end row-->
+
+
+        </div>
+        <!-- container-fluid -->
+    </div>
+    <!-- End Page-content -->
+
+{% endblock %}
+
+
+{% block extra_js %}
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+
+            // Reference to the checkout button
+            const checkoutButton = document.querySelector(".checkout-btn");
+
+            function getSelectedProductData() {
+                let selectedName = document.getElementById('productSearch-1').value;
+                let dataListOptions = document.querySelectorAll('#product-datalist option');
+
+                for (let option of dataListOptions) {
+                    if (option.value === selectedName) {
+                        return {
+                            id: option.getAttribute('data-id'),
+                            price: parseFloat(option.getAttribute('data-price')),
+                            stock: parseInt(option.getAttribute('data-stock'))
+                        };
+                    }
+                }
+                return null;
+            }
+
+            function calculateTotalAmount() {
+                let rows = document.querySelectorAll('#newlink .product');
+                let totalAmount = 0;
+
+                for (let row of rows) {
+                    let amount = parseFloat(row.querySelector('[data-amount]').textContent);
+                    totalAmount += amount;
+                }
+
+                document.getElementById('cart-total').value = totalAmount.toFixed(2);
+            }
+
+            document.getElementById('payment_type').addEventListener('change', function () {
+                const selectedPaymentTypeName = this.options[this.selectedIndex].textContent.trim();
+                const tenderedAmountInput = document.getElementById('tendered-ammount');
+                const totalAmountInput = document.getElementById('cart-total');
+                const changeAmountInput = document.getElementById('change-aamount');
+
+                if (selectedPaymentTypeName !== "Cash") {
+                    tenderedAmountInput.value = totalAmountInput.value;
+                    changeAmountInput.value = "0.00";
+                } else {
+                    tenderedAmountInput.value = 0.00;
+                    changeAmountInput.value = (parseFloat(tenderedAmountInput.value) - parseFloat(totalAmountInput.value)).toFixed(2);
+                }
+            });
+
+
+            document.getElementById('productSearch-1').addEventListener('change', function () {
+                let selectedName = this.value;
+                let selectElem = document.getElementById('productName-1');
+                for (let option of selectElem.options) {
+                    if (option.text === selectedName) {
+                        option.selected = true;
+                        break;
+                    }
+                }
+            });
+
+            document.querySelector('.plus').addEventListener('click', function () {
+                let qtyInput = document.getElementById('product-qty-1');
+                qtyInput.value = parseInt(qtyInput.value, 10) + 1;
+            });
+
+            document.querySelector('.minus').addEventListener('click', function () {
+                let qtyInput = document.getElementById('product-qty-1');
+                if (parseInt(qtyInput.value, 10) > 0) {
+                    qtyInput.value = parseInt(qtyInput.value, 10) - 1;
+                }
+            });
+
+            document.getElementById('add-item').addEventListener('click', function () {
+                let productSearchInput = document.getElementById('productSearch-1');
+                let productQuantityInput = document.getElementById('product-qty-1');
+                let tbody = document.getElementById('newlink');
+
+                let productData = getSelectedProductData();
+
+                let parsedQuantity = parseInt(productQuantityInput.value, 10);
+
+                if (!productData || isNaN(parsedQuantity) || parsedQuantity <= 0) {
+                    showModal("Please select a valid product and ensure quantity is a positive number.");
+                    return;
+                }
+
+                let currentAddedQuantity = Array.from(tbody.querySelectorAll('.product')).reduce((acc, row) => {
+                    if (row.querySelector('.product-id p').textContent.trim() === productData.id) {
+                        acc += parseInt(row.querySelector('[data-quantity]').textContent.trim(), 10);
+                    }
+                    return acc;
+                }, 0);
+
+                if (productData.stock < parsedQuantity + currentAddedQuantity) {
+                    showModal(`Sorry, there are only ${productData.stock} items in stock for ${productSearchInput.value}.`);
+                    return;
+                }
+
+                let productName = productSearchInput.value;
+                let sellPrice = productData.price;
+                let productQuantity = parseInt(productQuantityInput.value, 10);
+                let amount = productQuantity * sellPrice;
+
+                let newRow = document.createElement('tr');
+                newRow.className = 'product';
+                newRow.innerHTML = `
+                    <th scope="row" class="product-id">
+                        <div class="mb-2">
+                            <p class="form-control bg-light border-0">${productData.id}</p>
+                        </div>
+                    </th>
+                    <td class="text-start">
+                        <div class="mb-2">
+                            <p class="form-control bg-light border-0">${productName}</p>
+                        </div>
+                    </td>
+                    <td class="text-start">
+                        <div class="mb-2">
+                            <p class="form-control bg-light border-0" data-sell-price>${sellPrice.toFixed(2)}</p>
+                        </div>
+                    </td>
+                    <td class="text-start">
+                        <div class="mb-2">
+                            <p class="form-control bg-light border-0" data-quantity>${productQuantity}</p>
+                        </div>
+                    </td>
+                    <td class="text-start">
+                        <div class="mb-2">
+                            <p class="form-control bg-light border-0" data-amount>${amount.toFixed(2)}</p>
+                        </div>
+                    </td>
+                    <td class="product-removal">
+                        <button class="btn btn-success remove-button">Delete</button>
+                    </td>
+                `;
+
+                tbody.appendChild(newRow);
+
+                newRow.querySelector('.remove-button').addEventListener('click', function (event) {
+                    event.preventDefault();
+                    tbody.removeChild(newRow);
+                    calculateTotalAmount();
+                });
+
+                calculateTotalAmount();
+
+                productSearchInput.value = '';
+                productQuantityInput.value = '0';
+            });
+
+            document.getElementById('tendered-ammount').addEventListener('input', function () {
+                // Get the tendered amount from user input
+                let tenderedAmount = parseFloat(this.value) || 0;
+
+                // Get the total cart amount
+                let totalCartAmount = parseFloat(document.getElementById('cart-total').value) || 0;
+
+                // Calculate the change
+                let change = tenderedAmount - totalCartAmount;
+
+                // Set the calculated change in the change-amount input
+                document.getElementById('change-aamount').value = change.toFixed(2);
+
+                // If the change amount is less than 0, disable the checkout button
+                if (change < 0) {
+                    checkoutButton.setAttribute("disabled", "disabled");
+                } else {
+                    checkoutButton.removeAttribute("disabled");
+                }
+            });
+
+            document.getElementById('invoice_form').addEventListener('submit', function (e) {
+                let productDataArray = [];
+                let rows = document.querySelectorAll('#newlink .product');
+
+                rows.forEach(row => {
+                    let productId = row.querySelector('.product-id p').textContent.trim();
+                    let productQuantity = row.querySelector('[data-quantity]').textContent.trim();
+
+                    productDataArray.push({
+                        'product_id': productId,
+                        'quantity': productQuantity
+                    });
+                });
+
+                // Populate hidden fields before submitting
+                document.getElementById('hidden_product_data').value = JSON.stringify(productDataArray);
+                document.getElementById('hidden_grand_total').value = document.getElementById('cart-total').value;
+                document.getElementById('hidden_tendered_amount').value = document.getElementById('tendered-ammount').value;
+                document.getElementById('hidden_amount_change').value = document.getElementById('change-aamount').value;
+            });
+
+        });
+
+        function showModal(message) {
+            const customModalLabel = document.getElementById('customModalLabel');
+            const customModalMessage = document.getElementById('customModalMessage');
+            const customModalTryAgain = document.getElementById('customModalTryAgain');
+
+            // Set the message in the modal
+            customModalMessage.textContent = message;
+
+            // Show the modal
+            const customModal = new bootstrap.Modal(document.getElementById('customModal'));
+            customModal.show();
+
+            // Close the modal when "Try Again" is clicked
+            customModalTryAgain.addEventListener('click', function () {
+                customModal.hide();
+            });
+        }
+
+    </script>
+{% endblock %}
+
+

@@ -30,6 +30,8 @@ urlpatterns = [
     path('sale-list/', views.sale_list_view, name='sale-list'),
     path('sale/delete/<int:sale_id>/', views.sale_delete_view, name='sale-delete'),
     path('sale/<int:sale_id>/', views.sale_detail_view, name='sale-detail'),
+    path('receipt/<int:sale_id>/', views.sale_receipt_view, name='sale-receipt'),
 
     # ... other url patterns ...
+
 ]

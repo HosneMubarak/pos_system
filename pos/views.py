@@ -9,7 +9,6 @@ from django.db.models import Sum, Q
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.shortcuts import render
-from django.views.decorators.csrf import csrf_exempt
 
 from account.decorators import staff_user_required
 from .forms import *
@@ -457,67 +456,66 @@ def make_sale_view(request):
 @login_required
 @staff_user_required
 def save_sale_view(request):
-    if request.method == "POST":
-        try:
-            # Get form data
-            product_data = json.loads(request.POST.get('product_data'))
+    if request.method != "POST":
+        return JsonResponse({'status': 'error', 'message': 'Only POST method is allowed.'}, status=405)
 
-            # Check if product_data is empty
-            if not product_data:
-                messages.warning(request, "No products selected for the sale.")
-                return redirect('pos:make-sale')
+    try:
+        # Check if the request's body contains valid JSON data
+        if not request.body:
+            return JsonResponse({'status': 'error', 'message': 'No JSON data in the request.'}, status=400)
 
-            # Typecasting amounts into decimals
-            grand_total = Decimal(request.POST.get('grand_total'))
-            tendered_amount = Decimal(request.POST.get('tendered_amount'))
-            amount_change = Decimal(request.POST.get('amount_change'))
+        # Get the JSON data from the request's body
+        data = json.loads(request.body)
+        print(data)
+        product_data = data.get('product_data')
 
-            # Fetch the selected payment type
-            payment_type_id = request.POST.get('payment_type')
-            selected_payment_type = PaymentType.objects.get(id=payment_type_id)
+        # Check if product_data is empty
+        if not product_data:
+            return JsonResponse({'status': 'error', 'message': 'No products selected for the sale.'}, status=400)
 
-            # Save the Sale instance with the payment type
-            sale = Sale(
-                grand_total=grand_total,
-                sub_total=grand_total,
-                tendered_amount=tendered_amount,
-                amount_change=amount_change,
-                payment_type=selected_payment_type,
+        # Typecasting amounts into decimals
+        grand_total = Decimal(data.get('grand_total'))
+        tendered_amount = Decimal(data.get('tendered_amount'))
+        amount_change = Decimal(data.get('amount_change'))
+
+        # Fetch the selected payment type
+        payment_type_id = data.get('payment_type')
+        selected_payment_type = PaymentType.objects.get(id=payment_type_id)
+
+        # Save the Sale instance with the payment type
+        sale = Sale(
+            grand_total=grand_total,
+            sub_total=grand_total,
+            tendered_amount=tendered_amount,
+            amount_change=amount_change,
+            payment_type=selected_payment_type,
+            created_by=request.user,
+            updated_by=request.user
+        )
+        sale.save()
+
+        for product in product_data:
+            product_id = product['product_id']
+            quantity = int(product['quantity'])
+            related_product = Product.objects.get(id=product_id)  # fetch the related product
+
+            # Create the SaleItem instance
+            sale_item = SaleItem(
+                sale=sale,
+                product=related_product,
+                price=related_product.sell_price,  # Set the sell_price from related product
+                qty=quantity,
                 created_by=request.user,
                 updated_by=request.user
             )
-            sale.save()
+            sale_item.save()
 
-            for product in product_data:
-                product_id = product['product_id']
-                quantity = int(product['quantity'])
-                related_product = Product.objects.get(id=product_id)  # fetch the related product
+        messages.success(request, 'Invoice created successfully')
+        return JsonResponse({'status': 'success', 'sale_id': sale.id, 'message': 'Invoice created successfully!'})
 
-                # Create the SaleItem instance
-                sale_item = SaleItem(
-                    sale=sale,
-                    product=related_product,
-                    price=related_product.sell_price,  # Set the sell_price from related product
-                    qty=quantity,
-                    created_by=request.user,
-                    updated_by=request.user
-                )
-                sale_item.save()
-
-            messages.success(request, "Sale saved successfully!")
-            return redirect('pos:sale-list')
-
-        except Exception as e:
-            # Log the exception for debugging (this step is optional but helpful)
-            print(e)
-            # Add a Django error message
-            messages.error(request, f"There was an error processing your request: {str(e)}")
-            # Redirect to the sale page
-            return redirect('pos:make-sale')
-
-    else:
-        messages.warning(request, "Invalid request method.")
-        return redirect('pos:make-sale')
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': f'There was an error processing your request: {str(e)}'},
+                            status=500)
 
 
 @login_required
@@ -585,6 +583,27 @@ def sale_detail_view(request, sale_id):
     }
 
     return render(request, 'pos/sale_detail.html', context)
+
+
+@login_required
+@staff_user_required
+def sale_receipt_view(request, sale_id):
+    # Ensure only admin/staff can view sale details
+    if not request.user.is_staff:
+        messages.error(request, "You don't have the permission to view this sale.")
+        return redirect('pos:sale-list')  # Redirect back to the sale list view
+
+    sale = get_object_or_404(Sale, pk=sale_id)
+
+    # Corrected related data fetching for sales items for this sale
+    sales_items = sale.saleitem_set.all()
+
+    context = {
+        'sale': sale,
+        'sales_items': sales_items,
+    }
+
+    return render(request, 'pos/pos_receipt.html', context)
 
 
 @login_required
@@ -666,65 +685,3 @@ def payment_type_edit_view(request, payment_type_id):
         form = PaymentTypeForm(instance=payment_type)
 
     return render(request, 'pos/payment_type_edit.html', {'form': form, 'payment_type': payment_type})
-
-
-@login_required
-@csrf_exempt  # This is required if you're not handling CSRF tokens in your API client.
-def save_sale_api(request):
-    if request.method == "POST":
-        try:
-            # Parse the JSON body
-            data = json.loads(request.body.decode('utf-8'))
-
-            # Get form data
-            product_data = data.get('product_data', [])
-
-            # Check if product_data is empty
-            if not product_data:
-                return JsonResponse({"message": "No products selected for the sale.", "status": "error"}, status=400)
-
-            # Typecasting amounts into decimals
-            grand_total = Decimal(data.get('grand_total'))
-            tendered_amount = Decimal(data.get('tendered_amount'))
-            amount_change = Decimal(data.get('amount_change'))
-
-            # Fetch the selected payment type
-            payment_type_id = data.get('payment_type')
-            selected_payment_type = PaymentType.objects.get(id=payment_type_id)
-
-            # Save the Sale instance with the payment type
-            sale = Sale(
-                grand_total=grand_total,
-                sub_total=grand_total,
-                tendered_amount=tendered_amount,
-                amount_change=amount_change,
-                payment_type=selected_payment_type,
-                created_by=request.user,
-                updated_by=request.user
-            )
-            sale.save()
-
-            for product in product_data:
-                product_id = product['product_id']
-                quantity = int(product['quantity'])
-                related_product = Product.objects.get(id=product_id)  # fetch the related product
-
-                # Create the SaleItem instance
-                sale_item = SaleItem(
-                    sale=sale,
-                    product=related_product,
-                    price=related_product.sell_price,  # Set the sell_price from related product
-                    qty=quantity,
-                    created_by=request.user,
-                    updated_by=request.user
-                )
-                sale_item.save()
-
-            return JsonResponse({"message": "Sale saved successfully!", "status": "success"}, status=201)
-
-        except Exception as e:
-            return JsonResponse({"message": f"There was an error processing your request: {str(e)}", "status": "error"},
-                                status=400)
-
-    else:
-        return JsonResponse({"message": "Invalid request method.", "status": "error"}, status=405)
