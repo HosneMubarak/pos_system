@@ -84,6 +84,13 @@
                                                     <ul class="dropdown-menu">
                                                         <!-- Update action links as needed -->
                                                         <li>
+                                                            <a href="{% url 'pos:sale-receipt' sale_id=sale.id %}"
+                                                               class="dropdown-item">
+                                                                <i class="las la-receipt fs-18 align-middle me-2 text-muted"></i>
+                                                                Receipt
+                                                            </a>
+                                                        </li>
+                                                        <li>
                                                             <a href="{% url 'pos:sale-detail' sale_id=sale.id %}"
                                                                class="dropdown-item">
                                                                 <i class="las la-eye fs-18 align-middle me-2 text-muted"></i>
