@@ -2,7 +2,7 @@ from django.contrib import admin
 from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 
-from .models import Category, Product, Sale, SaleItem, StockTransaction
+from .models import Category, Product, Sale, SaleItem, StockTransaction, PaymentType
 
 
 # Create resources for each model
@@ -33,6 +33,12 @@ class SaleItemResource(resources.ModelResource):
 class StockTransactionResource(resources.ModelResource):
     class Meta:
         model = StockTransaction
+        fields = '__all__'
+
+
+class PaymentTypeResource(resources.ModelResource):
+    class Meta:
+        model = PaymentType
         fields = '__all__'
 
 
@@ -76,9 +82,16 @@ class StockTransactionAdmin(ImportExportModelAdmin):
     list_per_page = 20
 
 
+class PaymentAdmin(ImportExportModelAdmin):
+    model = PaymentType
+    list_display = ('id', 'name')
+    list_per_page = 20
+
+
 # Register your models and admin classes
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Sale, SaleAdmin)
 admin.site.register(SaleItem, SaleItemAdmin)
 admin.site.register(StockTransaction, StockTransactionAdmin)
+admin.site.register(PaymentType, PaymentAdmin)

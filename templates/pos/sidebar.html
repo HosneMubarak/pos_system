@@ -88,9 +88,9 @@
                         </a>
                     </li>
                 {% endif %}
-                <li class="menu-title"><i class="ri-more-fill"></i> <span
-                        data-key="t-components">Invoice/Sale</span></li>
                 {% if request.user.is_admin or request.user.is_superuser %}
+                    <li class="menu-title"><i class="ri-more-fill"></i> <span
+                            data-key="t-components">Invoice/Sale</span></li>
                     <li class="nav-item">
                         <a class="nav-link menu-link" href="{% url 'pos:sale-list' %}" role="button"
                            aria-expanded="false" aria-controls="sidebarTables">
@@ -111,9 +111,9 @@
                     </li>
 
                 {% endif %}
-                <li class="menu-title"><i class="ri-more-fill"></i> <span
-                        data-key="t-components">User </span></li>
                 {% if request.user.is_admin or request.user.is_superuser %}
+                    <li class="menu-title"><i class="ri-more-fill"></i> <span
+                            data-key="t-components">User </span></li>
                     <li class="nav-item">
                         <a class="nav-link menu-link" href="{% url 'account:user-list' %}" role="button"
                            aria-expanded="false" aria-controls="sidebarTables">

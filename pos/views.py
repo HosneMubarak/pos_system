@@ -109,7 +109,7 @@ def category_add_view(request):
     # Ensure only admin can add categories
     if not request.user.is_admin:
         messages.error(request, "You don't have the permission to add categories.")
-        return redirect('pos:category-list')  # Redirect back to the category list view if not admin
+        return redirect('pos:dashboard')  # Redirect back to the category list view if not admin
 
     if request.method == 'POST':
         form = CategoryForm(request.POST)
@@ -134,7 +134,7 @@ def category_edit_view(request, category_id):
     # Ensure only admin can edit categories
     if not request.user.is_admin:
         messages.error(request, "You don't have the permission to edit this category.")
-        return redirect('pos:category-list')  # Redirect back to the category list view if not admin
+        return redirect('pos:dashboard')  # Redirect back to the category list view if not admin
 
     category = get_object_or_404(Category, pk=category_id)
 
@@ -160,7 +160,7 @@ def category_delete_view(request, category_id):
     # Ensure only admin can delete
     if not request.user.is_admin:
         messages.error(request, "You don't have the permission to delete this category.")
-        return redirect('pos:category-list')  # Redirect back to the category list view
+        return redirect('pos:dashboard')  # Redirect back to the category list view
 
     category = get_object_or_404(Category, pk=category_id)
 
@@ -219,7 +219,7 @@ def product_add_view(request):
     # Ensure only admin can edit
     if not request.user.is_admin:
         messages.error(request, "You don't have the permission to edit this product.")
-        return redirect('pos:product-list')  # Redirect back to the product list view if not admin
+        return redirect('pos:dashboard')  # Redirect back to the product list view if not admin
     categories = Category.objects.all()
     if request.method == 'POST':
         form = ProductForm(request.POST)
@@ -244,7 +244,7 @@ def product_edit_view(request, product_id):
     # Ensure only admin can edit
     if not request.user.is_admin:
         messages.error(request, "You don't have the permission to edit this product.")
-        return redirect('pos:product-list')  # Redirect back to the product list view if not admin
+        return redirect('pos:dashboard')  # Redirect back to the product list view if not admin
 
     product = get_object_or_404(Product, pk=product_id)
     categories = Category.objects.all()
@@ -271,7 +271,7 @@ def product_delete_view(request, product_id):
     # Ensure only admin can delete
     if not request.user.is_admin:
         messages.error(request, "You don't have the permission to delete this product.")
-        return redirect('pos:product-list')  # Redirect back to the product list view
+        return redirect('pos:dashboard')  # Redirect back to the product list view
 
     product = get_object_or_404(Product, pk=product_id)
 
@@ -338,6 +338,9 @@ def stock_detail_view(request, stock_id):
 @login_required
 @staff_user_required
 def stock_add_view(request):
+    if not request.user.is_admin:
+        messages.error(request, "You don't have the permission to add stock transactions.")
+        return redirect('pos:dashboard')
     products = Product.objects.all()
 
     if request.method == 'POST':
@@ -369,6 +372,9 @@ def stock_add_view(request):
 @login_required
 @staff_user_required
 def stock_edit_view(request, stock_id):
+    if not request.user.is_admin:
+        messages.error(request, "You don't have the permission to edit this stock transaction.")
+        return redirect('pos:dashboard')
     stock_transaction = get_object_or_404(StockTransaction, pk=stock_id)
     products = Product.objects.all()
 
@@ -433,7 +439,7 @@ def sale_item_delete_view(request, sale_item_id):
     # Ensure only admin can delete
     if not request.user.is_admin:
         messages.error(request, "You don't have the permission to delete this sale item.")
-        return redirect('pos:sale-item-list')  # Redirect back to the sale item list view
+        return redirect('pos:dashboard')
 
     sale_item = get_object_or_404(SaleItem, pk=sale_item_id)
 
@@ -553,7 +559,7 @@ def sale_delete_view(request, sale_id):
     # Ensure only admin can delete
     if not request.user.is_admin:
         messages.error(request, "You don't have the permission to delete this sale.")
-        return redirect('pos:sale-list')  # Redirect back to the sale list view
+        return redirect('pos:dashboard')
 
     sale = get_object_or_404(Sale, pk=sale_id)
 
@@ -572,7 +578,7 @@ def sale_detail_view(request, sale_id):
     # Ensure only admin/staff can view sale details
     if not request.user.is_staff:
         messages.error(request, "You don't have the permission to view this sale.")
-        return redirect('pos:sale-list')  # Redirect back to the sale list view
+        return redirect('pos:dashboard')
 
     sale = get_object_or_404(Sale, pk=sale_id)
 
@@ -593,7 +599,7 @@ def sale_receipt_view(request, sale_id):
     # Ensure only admin/staff can view sale details
     if not request.user.is_staff:
         messages.error(request, "You don't have the permission to view this sale.")
-        return redirect('pos:sale-list')  # Redirect back to the sale list view
+        return redirect('pos:dashboard')
 
     sale = get_object_or_404(Sale, pk=sale_id)
 
@@ -648,7 +654,7 @@ def payment_type_add_view(request):
     # Ensure only admin can add payment types
     if not request.user.is_staff:
         messages.error(request, "You don't have the permission to add payment types.")
-        return redirect('pos:payment_type-list')
+        return redirect('pos:dashboard')
 
     if request.method == 'POST':
         form = PaymentTypeForm(request.POST)
@@ -671,7 +677,7 @@ def payment_type_edit_view(request, payment_type_id):
     # Ensure only admin can edit payment types
     if not request.user.is_staff:
         messages.error(request, "You don't have the permission to edit this payment type.")
-        return redirect('pos:payment_type_list')
+        return redirect('pos:dashboard')
 
     payment_type = get_object_or_404(PaymentType, pk=payment_type_id)
 
@@ -697,7 +703,7 @@ from django.db.models import Sum
 def sale_report_view(request):
     if not request.user.is_staff:
         messages.error(request, "You don't have the permission to view this page.")
-        return redirect('pos:payment_type-list')
+        return redirect('pos:dashboard')
 
     sales = Sale.objects.all().select_related('created_by', 'updated_by')
 
