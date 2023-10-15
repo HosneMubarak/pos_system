@@ -521,7 +521,7 @@
                                 .then(response => response.text())
                                 .then(receiptHTML => {
                                     // Create a new window to print the receipt
-                                    const printWindow = window.open('', '', 'width=600,height=600');
+                                    const printWindow = window.open('', '',  "width=800,height=800,left=300, top = 200");
                                     printWindow.document.open();
                                     printWindow.document.write(receiptHTML);
                                     printWindow.document.close();

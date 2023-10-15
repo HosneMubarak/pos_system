@@ -6,42 +6,42 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            color: #000; /* Set text color to dark */
+            color: #000;
         }
 
         #invoice-POS {
             box-shadow: 0 0 1in -0.25in rgba(0, 0, 0, 0.5);
             padding: 20px;
-            margin: 0 auto;
             width: 300px;
+            margin: 0 auto; /* Center the content horizontally */
             background: #FFF;
         }
 
         h1 {
             font-size: 1.5em;
-            color: #000; /* Set text color to dark */
-            font-weight: bold; /* Make text bold */
+            color: #000;
+            font-weight: bold;
         }
 
         h2 {
             font-size: 1em;
-            color: #000; /* Set text color to dark */
-            font-weight: bold; /* Make text bold */
+            color: #000;
+            font-weight: bold;
         }
 
         h3 {
             font-size: 1.2em;
             font-weight: 300;
             line-height: 2em;
-            color: #000; /* Set text color to dark */
-            font-weight: bold; /* Make text bold */
+            color: #000;
+            font-weight: bold;
         }
 
         p {
             font-size: 0.8em;
-            color: #000; /* Set text color to dark */
+            color: #000;
             line-height: 1.2em;
-            font-weight: bold; /* Make text bold */
+            font-weight: bold;
         }
 
         #top, #mid, #bot {
@@ -95,15 +95,15 @@
         td {
             padding: 5px 0 5px 15px;
             border: 1px solid #EEE;
-            color: #000; /* Set text color to dark */
-            font-weight: bold; /* Make text bold */
+            color: #000;
+            font-weight: bold;
         }
 
         .tabletitle {
             font-size: 0.9em;
             background: #EEE;
-            color: #000; /* Set text color to dark */
-            font-weight: bold; /* Make text bold */
+            color: #000;
+            font-weight: bold;
         }
 
         .service {
@@ -116,14 +116,14 @@
 
         .itemtext {
             font-size: 0.9em;
-            color: #000; /* Set text color to dark */
-            font-weight: bold; /* Make text bold */
+            color: #000;
+            font-weight: bold;
         }
 
         #legalcopy {
             margin-top: 5mm;
-            color: #000; /* Set text color to dark */
-            font-weight: bold; /* Make text bold */
+            color: #000;
+            font-weight: bold;
         }
 
         @media print {
@@ -131,8 +131,12 @@
                 display: none;
             }
         }
-    </style>
 
+        @page {
+            size: 80mm 100mm;
+        }
+
+    </style>
 </head>
 <body>
 <div id="invoice-POS">
@@ -155,22 +159,23 @@
                     <td class="Hours"><h2>Qty</h2></td>
                     <td class="Rate"><h2>Sub Total</h2></td>
                 </tr>
+                <!-- Add your sales_items loop here -->
                 {% for item in sales_items %}
-                    <tr class="service">
-                        <td class="tableitem"><p class="itemtext">{{ item.product.name }}</p></td>
-                        <td class="tableitem"><p class="itemtext">{{ item.qty }}</p></td>
-                        <td class="tableitem"><p class="itemtext">${{ item.total }}</p></td>
+                    <tr class="tabletitle">
+                        <td>{{ item.product.name }}</td>
+                        <td class="Rate"><h2>{{ item.qty }}</h2></td>
+                        <td class="payment"><h2>${{ item.total }}</h2></td>
                     </tr>
                 {% endfor %}
                 <tr class="tabletitle">
-                    <td></td>
-                    <td class="Rate"><h2>tax</h2></td>
+                    <td>tax</td>
+                    <td class="Rate"><h2></h2></td>
                     <td class="payment"><h2>${{ sale.tax_amount }}</h2></td>
                 </tr>
             </table>
         </div>
         <div class="border-top border-top-dashed mt-2">
-            <table class="table table-borderless table-nowrap align-middle mb-0 ms-auto" style="width:250px">
+            <table class="table table-borderless table-nowrap align-middle mb-0 ms-auto" style="width: 250px">
                 <tbody>
                 <tr class="border-top border-top-dashed fs-15">
                     <th scope="row">Total Amount</th>
