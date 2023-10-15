@@ -199,13 +199,12 @@
 
             // Function to reset payment type dropdown
             function resetPaymentTypeDropdown() {
+                // Pre-select "Cash" payment type
                 const paymentTypeDropdown = document.getElementById('payment_type');
+                const cashOption = paymentTypeDropdown.querySelector('option[value="1"]'); // Assuming "1" is the value for "Cash"
 
-                // Find the option with an empty value and set it as selected
-                const defaultOption = paymentTypeDropdown.querySelector('option[value=""]');
-
-                if (defaultOption) {
-                    defaultOption.selected = true;
+                if (cashOption) {
+                    cashOption.selected = true;
                 }
             }
 
@@ -256,6 +255,7 @@
                 }
 
                 document.getElementById('cart-total').value = totalAmount.toFixed(2);
+                document.getElementById('tendered-ammount').value = totalAmount.toFixed(2);
                 resetPaymentTypeDropdown();
             }
 
@@ -266,12 +266,9 @@
                 const totalAmountInput = document.getElementById('cart-total');
                 const changeAmountInput = document.getElementById('change-aamount');
 
-                if (selectedPaymentTypeName !== "Cash") {
+                if (selectedPaymentTypeName) {
                     tenderedAmountInput.value = totalAmountInput.value;
                     changeAmountInput.value = "0.00";
-                } else {
-                    tenderedAmountInput.value = "0.00";
-                    changeAmountInput.value = (parseFloat(tenderedAmountInput.value) - parseFloat(totalAmountInput.value)).toFixed(2);
                 }
             });
 
