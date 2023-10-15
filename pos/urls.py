@@ -28,6 +28,7 @@ urlpatterns = [
     path('make-sale/', views.make_sale_view, name='make-sale'),
     path('save-sale/', views.save_sale_view, name='save_sale'),
     path('sale-list/', views.sale_list_view, name='sale-list'),
+    path('sale-report/', views.sale_report_view, name='sale-report'),
     path('sale/delete/<int:sale_id>/', views.sale_delete_view, name='sale-delete'),
     path('sale/<int:sale_id>/', views.sale_detail_view, name='sale-detail'),
     path('receipt/<int:sale_id>/', views.sale_receipt_view, name='sale-receipt'),

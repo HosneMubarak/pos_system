@@ -197,6 +197,18 @@
     <script type="text/javascript">
         document.addEventListener('DOMContentLoaded', function () {
 
+            // Function to reset payment type dropdown
+            function resetPaymentTypeDropdown() {
+                const paymentTypeDropdown = document.getElementById('payment_type');
+
+                // Find the option with an empty value and set it as selected
+                const defaultOption = paymentTypeDropdown.querySelector('option[value=""]');
+
+                if (defaultOption) {
+                    defaultOption.selected = true;
+                }
+            }
+
             // Function to show a modal with a message
             function showModal(message) {
                 const customModalLabel = document.getElementById('customModalLabel');
@@ -244,6 +256,7 @@
                 }
 
                 document.getElementById('cart-total').value = totalAmount.toFixed(2);
+                resetPaymentTypeDropdown();
             }
 
             // Event listener for the payment type dropdown change
@@ -272,12 +285,14 @@
                         break;
                     }
                 }
+                resetPaymentTypeDropdown();
             });
 
             // Event listener for the plus button
             document.querySelector('.plus').addEventListener('click', function () {
                 let qtyInput = document.getElementById('product-qty-1');
                 qtyInput.value = parseInt(qtyInput.value, 10) + 1;
+                resetPaymentTypeDropdown();
             });
 
             // Event listener for the minus button
@@ -286,6 +301,7 @@
                 if (parseInt(qtyInput.value, 10) > 0) {
                     qtyInput.value = parseInt(qtyInput.value, 10) - 1;
                 }
+                resetPaymentTypeDropdown();
             });
 
             // Event listener for the "Add Item" button
@@ -420,33 +436,12 @@
                 }
 
                 calculateTotalAmount();
+                resetPaymentTypeDropdown();
 
                 productSearchInput.value = '';
                 productQuantityInput.value = '1';
             });
 
-
-            // Event listener for the tendered amount input
-            document.getElementById('tendered-ammount').addEventListener('input', function () {
-                // Get the tendered amount from user input
-                let tenderedAmount = parseFloat(this.value) || 0;
-
-                // Get the total cart amount
-                let totalCartAmount = parseFloat(document.getElementById('cart-total').value) || 0;
-
-                // Calculate the change
-                let change = tenderedAmount - totalCartAmount;
-
-                // Set the calculated change in the change-amount input
-                document.getElementById('change-aamount').value = change.toFixed(2);
-
-                // Disable the checkout button if change is negative
-                if (change < 0) {
-                    checkoutButton.setAttribute("disabled", "disabled");
-                } else {
-                    checkoutButton.removeAttribute("disabled");
-                }
-            });
             // Event listener for the tendered amount input
             document.getElementById('tendered-ammount').addEventListener('input', function () {
                 // Get the tendered amount from user input
@@ -536,18 +531,21 @@
 
                                     // Use the print() method to print the receipt
                                     printWindow.print();
-                                    {#printWindow.close();#}
-                                    {#window.location.reload();#}
+                                    printWindow.close();
+                                    window.location.reload();
                                 })
                                 .catch(error => {
                                     console.error('Error fetching and printing the receipt: ' + error);
+                                    showModal('Error fetching and printing the receipt: ' + error);
                                 });
                         } else {
                             console.error('Error creating the invoice: ' + data.message);
+                            showModal('Error creating the invoice: ' + data.message);
                         }
                     })
                     .catch(error => {
                         console.error('Error creating the invoice: ' + error);
+                        showModal('Error creating the invoice: ' + error);
                     });
 
             });

@@ -1,11 +1,12 @@
 import json
-from datetime import datetime, timedelta
+from datetime import datetime
+from datetime import timedelta
 from decimal import Decimal
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
-from django.db.models import Sum, Q
+from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.shortcuts import render
@@ -13,6 +14,7 @@ from django.shortcuts import render
 from account.decorators import staff_user_required
 from .forms import *
 from .models import *
+from .models import Sale
 
 
 @login_required
@@ -466,7 +468,6 @@ def save_sale_view(request):
 
         # Get the JSON data from the request's body
         data = json.loads(request.body)
-        print(data)
         product_data = data.get('product_data')
 
         # Check if product_data is empty
@@ -514,6 +515,7 @@ def save_sale_view(request):
         return JsonResponse({'status': 'success', 'sale_id': sale.id, 'message': 'Invoice created successfully!'})
 
     except Exception as e:
+        print(e)
         return JsonResponse({'status': 'error', 'message': f'There was an error processing your request: {str(e)}'},
                             status=500)
 
@@ -685,3 +687,74 @@ def payment_type_edit_view(request, payment_type_id):
         form = PaymentTypeForm(instance=payment_type)
 
     return render(request, 'pos/payment_type_edit.html', {'form': form, 'payment_type': payment_type})
+
+
+from django.db.models import Sum
+
+
+@login_required
+@staff_user_required
+def sale_report_view(request):
+    if not request.user.is_staff:
+        messages.error(request, "You don't have the permission to view this page.")
+        return redirect('pos:payment_type-list')
+
+    sales = Sale.objects.all().select_related('created_by', 'updated_by')
+
+    # Date range filter
+    start_date = request.GET.get('start_date')
+    end_date = request.GET.get('end_date')
+
+    try:
+        if start_date:
+            start_date = datetime.strptime(start_date, '%Y-%m-%d')
+            sales = sales.filter(date_added__date__gte=start_date.date())
+
+        if end_date:
+            end_date = datetime.strptime(end_date, '%Y-%m-%d')
+            sales = sales.filter(date_added__date__lte=end_date.date())
+
+        # Check if the end date is greater than or equal to the start date
+        if start_date and end_date and end_date < start_date:
+            messages.error(request, "End date should be greater than or equal to start date.")
+            return redirect('pos:sale_report')
+
+    except ValueError:
+        messages.error(request, "Invalid date format. Please use YYYY-MM-DD.")
+        return redirect('pos:sale_report')
+
+    # Calculate total sale price and count
+    total_sale_price = sales.aggregate(Sum('grand_total'))['grand_total__sum']
+    total_sale_count = sales.count()
+
+    # Number of sales to display per page
+    per_page = 30
+
+    # Create a Paginator object
+    paginator = Paginator(sales, per_page)
+
+    # Get the current page number from the request's GET parameters
+    page_number = request.GET.get('page')
+
+    # Get the Page object for the current page
+    page = paginator.get_page(page_number)
+
+    # Customize pagination information
+    pagination_info = {
+        'total_items': paginator.count,
+        'items_per_page': per_page,
+        'total_pages': paginator.num_pages,
+        'current_page': page.number,
+    }
+
+    # Pass date range parameters, total sale price, and total sale count to the template
+    date_range_params = {
+        'start_date': start_date.strftime('%Y-%m-%d') if start_date else '',
+        'end_date': end_date.strftime('%Y-%m-%d') if end_date else '',
+    }
+
+    return render(request, 'pos/sale_report.html',
+                  {'page': page, 'pagination_info': pagination_info,
+                   'date_range_params': date_range_params,
+                   'total_sale_price': total_sale_price,
+                   'total_sale_count': total_sale_count})

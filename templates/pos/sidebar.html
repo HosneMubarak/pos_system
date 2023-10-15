@@ -46,53 +46,73 @@
                         <i class="las la-book"></i> <span data-key="t-dashboard">Create Invoice</span>
                     </a>
                 </li>
-
-                <li class="menu-title"><i class="ri-more-fill"></i> <span
-                        data-key="t-components">Pages</span></li>
-                <li class="nav-item">
-                    <a class="nav-link menu-link" href="{% url 'pos:product-list' %}" role="button"
-                       aria-expanded="false" aria-controls="sidebarTables">
-                        <i class="las la-boxes"></i> <span data-key="t-tables">Product List</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link menu-link" href="{% url 'pos:category-list' %}" role="button"
-                       aria-expanded="false" aria-controls="sidebarTables">
-                        <i class="las la-list"></i> <span data-key="t-tables">Category List</span>
-                    </a>
-                </li>
                 {% if request.user.is_admin or request.user.is_superuser %}
+                    <li class="menu-title"><i class="ri-more-fill"></i> <span
+                            data-key="t-components">Product</span></li>
+                    <li class="nav-item">
+                        <a class="nav-link menu-link" href="{% url 'pos:product-list' %}" role="button"
+                           aria-expanded="false" aria-controls="sidebarTables">
+                            <i class="las la-boxes"></i> <span data-key="t-tables">Product List</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link menu-link" href="{% url 'pos:category-list' %}" role="button"
+                           aria-expanded="false" aria-controls="sidebarTables">
+                            <i class="las la-list"></i> <span data-key="t-tables">Category List</span>
+                        </a>
+                    </li>
+                {% endif %}
+                {% if request.user.is_admin or request.user.is_superuser %}
+                    <li class="menu-title"><i class="ri-more-fill"></i> <span
+                            data-key="t-components">Report</span></li>
+                    <li class="nav-item">
+                        <a class="nav-link menu-link" href="{% url 'pos:sale-report' %}" role="button"
+                           aria-expanded="false" aria-controls="sidebarTables">
+                            <i class=" las la-dolly"></i> <span data-key="t-tables">Sale Report</span>
+                        </a>
+                    </li>
+                {% endif %}
+                {% if request.user.is_admin or request.user.is_superuser %}
+                    <li class="menu-title"><i class="ri-more-fill"></i> <span
+                            data-key="t-components">Stock</span></li>
+                    <li class="nav-item">
+                        <a class="nav-link menu-link" href="{% url 'pos:stock-list' %}" role="button"
+                           aria-expanded="false" aria-controls="sidebarTables">
+                            <i class=" las la-dolly"></i> <span data-key="t-tables">Stock List</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link menu-link" href="{% url 'pos:stock-add' %}" role="button"
+                           aria-expanded="false" aria-controls="sidebarTables">
+                            <i class=" las la-box"></i> <span data-key="t-tables">Manage Stock</span>
+                        </a>
+                    </li>
+                {% endif %}
+                <li class="menu-title"><i class="ri-more-fill"></i> <span
+                        data-key="t-components">Invoice/Sale</span></li>
+                {% if request.user.is_admin or request.user.is_superuser %}
+                    <li class="nav-item">
+                        <a class="nav-link menu-link" href="{% url 'pos:sale-list' %}" role="button"
+                           aria-expanded="false" aria-controls="sidebarTables">
+                            <i class=" las la-money-bill"></i> <span data-key="t-tables">Invoice List</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link menu-link" href="{% url 'pos:sale-item-list' %}" role="button"
+                           aria-expanded="false" aria-controls="sidebarTables">
+                            <i class=" las la-money-bill"></i> <span data-key="t-tables">Sale Product List</span>
+                        </a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link menu-link" href="{% url 'pos:payment_type-list' %}" role="button"
                            aria-expanded="false" aria-controls="sidebarTables">
                             <i class="las la-list"></i> <span data-key="t-tables">PaymentType List</span>
                         </a>
                     </li>
+
                 {% endif %}
-                <li class="nav-item">
-                    <a class="nav-link menu-link" href="{% url 'pos:sale-list' %}" role="button"
-                       aria-expanded="false" aria-controls="sidebarTables">
-                        <i class=" las la-money-bill"></i> <span data-key="t-tables">Invoice List</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link menu-link" href="{% url 'pos:sale-item-list' %}" role="button"
-                       aria-expanded="false" aria-controls="sidebarTables">
-                        <i class=" las la-money-bill"></i> <span data-key="t-tables">Sale Product List</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link menu-link" href="{% url 'pos:stock-list' %}" role="button"
-                       aria-expanded="false" aria-controls="sidebarTables">
-                        <i class=" las la-dolly"></i> <span data-key="t-tables">Stock List</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link menu-link" href="{% url 'pos:stock-add' %}" role="button"
-                       aria-expanded="false" aria-controls="sidebarTables">
-                        <i class=" las la-box"></i> <span data-key="t-tables">Manage Stock</span>
-                    </a>
-                </li>
+                <li class="menu-title"><i class="ri-more-fill"></i> <span
+                        data-key="t-components">User </span></li>
                 {% if request.user.is_admin or request.user.is_superuser %}
                     <li class="nav-item">
                         <a class="nav-link menu-link" href="{% url 'account:user-list' %}" role="button"
@@ -102,6 +122,7 @@
                     </li>
                 {% endif %}
             </ul>
+            <ul></ul>
         </div>
         <!-- Sidebar -->
     </div>
