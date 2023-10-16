@@ -21,6 +21,7 @@
             font-size: 1.5em;
             color: #000;
             font-weight: bold;
+            text-align: start;
         }
 
         h2 {
@@ -148,6 +149,7 @@
             <p>Date: {{ sale.date_added|date:"Y-m-d H:i:s" }}</p>
             <p>Order #: {{ sale.code }}</p>
             <p>Cashier: {{ sale.created_by.username }}</p>
+            <p>Payment Type: {{ sale.payment_type }}</p>
         </div>
     </div>
 
