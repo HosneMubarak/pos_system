@@ -132,29 +132,41 @@
                             <p class="mb-0 text-muted">Showing <b>{{ page.start_index }}</b> to
                                 <b>{{ page.end_index }}</b> of <b>{{ page.paginator.count }}</b> results</p>
                         </div>
-                        <div class="col-sm-auto ms-auto">
-                            <nav aria-label="...">
-                                <ul class="pagination mb-0">
-                                    {% if page.has_previous %}
-                                        <li class="page-item">
-                                            <a class="page-link" href="?page=1">First</a>
-                                        </li>
-                                        <li class="page-item">
-                                            <a class="page-link"
-                                               href="?page={{ page.previous_page_number }}">Previous</a>
-                                        </li>
-                                    {% endif %}
-                                    {% if page.has_next %}
-                                        <li class="page-item">
-                                            <a class="page-link" href="?page={{ page.next_page_number }}">Next</a>
-                                        </li>
-                                        <li class="page-item">
-                                            <a class="page-link" href="?page={{ page.paginator.num_pages }}">Last</a>
-                                        </li>
-                                    {% endif %}
-                                </ul>
-                            </nav>
-                        </div>
+                       <div class="col-sm-auto ms-auto">
+                        <nav aria-label="">
+                            <ul class="pagination mb-0">
+                                <li class="page-item disabled">
+                                    <span class="page-link">Page {{ page.number }} of {{ page.paginator.num_pages }}</span>
+                                </li>
+                                {% if page.has_previous %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page=1">First</a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ page.previous_page_number }}">Previous</a>
+                                    </li>
+                                {% endif %}
+                                {% if page.has_next %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ page.next_page_number }}">Next</a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ page.paginator.num_pages }}">Last</a>
+                                    </li>
+                                {% endif %}
+                                <li class="page-item">
+                                    <span class="page-link">Go to Page</span>
+                                </li>
+                                <li class="page-item">
+                                    <select class="form-select" id="pageSelect" onchange="window.location.href='?page='+this.value" style="padding-top: .25rem; height: 2.3rem;">
+                                        {% for p in page.paginator.page_range %}
+                                            <option value="{{ p }}" {% if p == page.number %}selected{% endif %}>{{ p }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
                     </div>
                 </div>
             </div>

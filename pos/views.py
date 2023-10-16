@@ -737,7 +737,7 @@ def sale_report_view(request):
     payment_counts = sales.values('payment_type__name').annotate(count=Count('payment_type'))
 
     # Number of sales to display per page
-    per_page = 30
+    per_page = 10
 
     # Create a Paginator object
     paginator = Paginator(sales, per_page)
