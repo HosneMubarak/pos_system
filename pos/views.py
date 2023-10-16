@@ -2,7 +2,7 @@ import json
 from datetime import timedelta
 from decimal import Decimal
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q
+from django.db.models import Q, Count
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 
@@ -729,9 +729,12 @@ def sale_report_view(request):
         messages.error(request, "Invalid date format. Please use YYYY-MM-DD.")
         return redirect('pos:sale_report')
 
-    # Calculate total sale price and count
+    # Aggregate total sale price and count
     total_sale_price = sales.aggregate(Sum('grand_total'))['grand_total__sum']
     total_sale_count = sales.count()
+
+    # Aggregate payment counts by payment type
+    payment_counts = sales.values('payment_type__name').annotate(count=Count('payment_type'))
 
     # Number of sales to display per page
     per_page = 30
@@ -753,7 +756,7 @@ def sale_report_view(request):
         'current_page': page.number,
     }
 
-    # Pass date range parameters, total sale price, and total sale count to the template
+    # Pass date range parameters, total sale price, total sale count, and payment counts to the template
     date_range_params = {
         'start_date': start_date.strftime('%Y-%m-%d') if start_date else '',
         'end_date': end_date.strftime('%Y-%m-%d') if end_date else '',
@@ -776,6 +779,12 @@ def sale_report_view(request):
         csv_writer.writerow(['Total Sale Price:', total_sale_price])
         csv_writer.writerow([])  # Add an empty row for better readability
 
+        # Write payment counts
+        csv_writer.writerow(['Payment Type', 'Payment Count'])
+        for payment_count in payment_counts:
+            csv_writer.writerow([payment_count['payment_type__name'], payment_count['count']])
+        csv_writer.writerow([])  # Add an empty row for better readability
+
         # Write the header row
         csv_writer.writerow(['Invoice ID', 'Date Added', 'Payment Type', 'Sub Total', 'Grand Total', 'Sell By'])
 
@@ -796,6 +805,7 @@ def sale_report_view(request):
                   {'page': page, 'pagination_info': pagination_info,
                    'date_range_params': date_range_params,
                    'total_sale_price': total_sale_price,
-                   'total_sale_count': total_sale_count})
+                   'total_sale_count': total_sale_count,
+                   'payment_counts': payment_counts})
 
 

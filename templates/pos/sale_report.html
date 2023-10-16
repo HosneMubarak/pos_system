@@ -53,10 +53,10 @@
                         </div>
                     </form>
                 </div>
-             <div class="col-sm-auto">
+                <div class="col-sm-auto">
                     <!-- Add CSV Export Button -->
                     <a href="{% url 'pos:sale-report' %}?export_csv=true{% if date_range_params.start_date %}&start_date={{ date_range_params.start_date }}{% endif %}{% if date_range_params.end_date %}&end_date={{ date_range_params.end_date }}{% endif %}"
-                       class="btn btn-success"><i class="las la-file-csv me-1"></i> Export CSV</a>
+                       class="btn btn-success"><i class="las la-file-csv me-1"></i> Export </a>
                 </div>
             </div>
             <div class="row pb-1 gy-3">
@@ -74,7 +74,7 @@
                 </div>
             </div>
             <div class="row mt-3">
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">Total Sale Price</h5>
@@ -88,7 +88,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">Total Sale Count</h5>
@@ -99,6 +99,21 @@
                                     N/A
                                 {% endif %}
                             </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Payment Counts</h5>
+                            <ul class="list-group">
+                                {% for payment_count in payment_counts %}
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        {{ payment_count.payment_type__name }}
+                                        <span class="badge bg-primary rounded-pill">{{ payment_count.count }}</span>
+                                    </li>
+                                {% endfor %}
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -158,96 +173,15 @@
                                                href="?page=1{% if date_range_params.start_date %}&start_date={{ date_range_params.start_date }}{% endif %}{% if date_range_params.end_date %}&end_date={{ date_range_params.end_date }}{% endif %}">First</a>
                                         </li>
                                         <li class="page-item">
-                                            <a class="page-link" href="?page=
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                                    {{ page.previous_page_number }}{% if date_range_params.start_date %}&start_date={{ date_range_params.start_date }}{% endif %}{% if date_range_params.end_date %}&end_date={{ date_range_params.end_date }}{% endif %}">Previous</a>
+                                            <a class="page-link" href="?page= {{ page.previous_page_number }}{% if date_range_params.start_date %}&start_date={{ date_range_params.start_date }}{% endif %}{% if date_range_params.end_date %}&end_date={{ date_range_params.end_date }}{% endif %}">Previous</a>
                                         </li>
                                     {% endif %}
                                     {% if page.has_next %}
                                         <li class="page-item">
-                                            <a class="page-link" href="?page=
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                                    {{ page.next_page_number }}{% if date_range_params.start_date %}&start_date={{ date_range_params.start_date }}{% endif %}{% if date_range_params.end_date %}&end_date={{ date_range_params.end_date }}{% endif %}">Next</a>
+                                            <a class="page-link" href="?page={{ page.next_page_number }}{% if date_range_params.start_date %}&start_date={{ date_range_params.start_date }}{% endif %}{% if date_range_params.end_date %}&end_date={{ date_range_params.end_date }}{% endif %}">Next</a>
                                         </li>
                                         <li class="page-item">
-                                            <a class="page-link" href="?page=
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                                    {{ page.paginator.num_pages }}{% if date_range_params.start_date %}&start_date={{ date_range_params.start_date }}{% endif %}{% if date_range_params.end_date %}&end_date={{ date_range_params.end_date }}{% endif %}">Last</a>
+                                            <a class="page-link" href="?page={{ page.paginator.num_pages }}{% if date_range_params.start_date %}&start_date={{ date_range_params.start_date }}{% endif %}{% if date_range_params.end_date %}&end_date={{ date_range_params.end_date }}{% endif %}">Last</a>
                                         </li>
                                     {% endif %}
                                 </ul>
