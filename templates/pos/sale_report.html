@@ -56,7 +56,7 @@
                 <div class="col-sm-auto">
                     <!-- Add CSV Export Button -->
                     <a href="{% url 'pos:sale-report' %}?export_csv=true{% if date_range_params.start_date %}&start_date={{ date_range_params.start_date }}{% endif %}{% if date_range_params.end_date %}&end_date={{ date_range_params.end_date }}{% endif %}"
-                       class="btn btn-success"><i class="las la-file-csv me-1"></i> Export </a>
+                       class="btn btn-success"><i class="las la-file-csv me-1"></i> Export CSV</a>
                 </div>
             </div>
             <div class="row pb-1 gy-3">
