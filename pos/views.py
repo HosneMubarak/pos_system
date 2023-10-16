@@ -1,20 +1,23 @@
 import json
-from datetime import datetime
 from datetime import timedelta
 from decimal import Decimal
-
-from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.core.paginator import Paginator
 from django.db.models import Q
 from django.http import JsonResponse
-from django.shortcuts import get_object_or_404, redirect
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404
 
 from account.decorators import staff_user_required
 from .forms import *
 from .models import *
-from .models import Sale
+
+import csv
+from django.http import HttpResponse
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.db.models import Sum
+from django.core.paginator import Paginator
+from datetime import datetime
+from .models import Sale  # Adjust this import based on your actual model location
 
 
 @login_required
@@ -695,9 +698,6 @@ def payment_type_edit_view(request, payment_type_id):
     return render(request, 'pos/payment_type_edit.html', {'form': form, 'payment_type': payment_type})
 
 
-from django.db.models import Sum
-
-
 @login_required
 @staff_user_required
 def sale_report_view(request):
@@ -759,8 +759,43 @@ def sale_report_view(request):
         'end_date': end_date.strftime('%Y-%m-%d') if end_date else '',
     }
 
+    # Check if a CSV export is requested
+    export_csv = request.GET.get('export_csv')
+
+    if export_csv:
+        # Prepare the response for a CSV file
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="sale_report.csv"'
+
+        # Create a CSV writer
+        csv_writer = csv.writer(response)
+
+        # Write metadata
+        csv_writer.writerow(['Date Range:', date_range_params['start_date'], 'to', date_range_params['end_date']])
+        csv_writer.writerow(['Total Sale Count:', total_sale_count])
+        csv_writer.writerow(['Total Sale Price:', total_sale_price])
+        csv_writer.writerow([])  # Add an empty row for better readability
+
+        # Write the header row
+        csv_writer.writerow(['Invoice ID', 'Date Added', 'Payment Type', 'Sub Total', 'Grand Total', 'Sell By'])
+
+        # Write data rows
+        for sale in sales:
+            csv_writer.writerow([
+                sale.code,
+                sale.date_added.strftime('%Y-%m-%d %H:%M:%S'),
+                sale.payment_type.name,
+                sale.sub_total,
+                sale.grand_total,
+                sale.created_by.username
+            ])
+
+        return response
+
     return render(request, 'pos/sale_report.html',
                   {'page': page, 'pagination_info': pagination_info,
                    'date_range_params': date_range_params,
                    'total_sale_price': total_sale_price,
                    'total_sale_count': total_sale_count})
+
+
