@@ -18,6 +18,8 @@ from django.db.models import Sum
 from django.core.paginator import Paginator
 from datetime import datetime
 from .models import Sale  # Adjust this import based on your actual model location
+from django.utils import timezone
+
 
 @login_required
 @staff_user_required
@@ -798,7 +800,8 @@ def sale_report_view(request):
         for sale in sales:
             csv_writer.writerow([
                 sale.code,
-                sale.date_added.strftime('%b. %d, %Y, %I:%M %p'),  # Format the date_added attribute
+                timezone.localtime(sale.date_added, timezone=timezone.get_current_timezone()).strftime('%b. %d, %Y, '
+                                                                                                       '%I:%M %p'),
                 sale.payment_type.name,
                 sale.sub_total,
                 sale.grand_total,
