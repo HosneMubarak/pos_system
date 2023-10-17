@@ -14,7 +14,7 @@ import csv
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.db.models import  Sum, F, ExpressionWrapper, fields
+from django.db.models import Sum, F, ExpressionWrapper, fields
 from django.core.paginator import Paginator
 from datetime import datetime
 from .models import Sale  # Adjust this import based on your actual model location

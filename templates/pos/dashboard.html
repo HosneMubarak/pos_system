@@ -214,6 +214,7 @@
             </div>
             <!-- end row -->
                 <!-- Top Sellers Section -->
+            {% if request.user.is_admin or request.user.is_superuser %}
             <div class="row">
                 <div class="col-xl-12">
                     <div class="card dash-mini">
@@ -240,6 +241,7 @@
                     </div>
                 </div>
             </div>
+            {% endif %}
 
             <!-- End Top Sellers Section -->
         </div>
