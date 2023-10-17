@@ -19,7 +19,6 @@ from django.core.paginator import Paginator
 from datetime import datetime
 from .models import Sale  # Adjust this import based on your actual model location
 
-
 @login_required
 @staff_user_required
 def dashboard_view(request):
@@ -57,11 +56,22 @@ def dashboard_view(request):
         date_added__date__range=(interval_start, interval_end)
     ).values('payment_type__name').annotate(count=Count('payment_type'))
 
+    category_count = Category.objects.count()
+    product_count = Product.objects.count()
+    user_count = get_user_model().objects.count()
+
+    aggregated_stock = Product.objects.aggregate(sum=Sum('stock'))['sum'] or 0
+
+    recent_stock_transactions = StockTransaction.objects.select_related('product').order_by('-date_added')[:5]
+
     context = {
+        'total_categories': category_count,
+        'total_products': product_count,
+        'total_stock': aggregated_stock,
+        'total_users': user_count,
         'sales_count_for_interval': sales_count_in_interval,
         'sales_amount_for_interval': sales_amount_in_interval,
         'recent_transactions': recent_stock_transactions,
-        'payment_counts': payment_counts,
         'time_interval': selected_interval or 'today',
     }
 
