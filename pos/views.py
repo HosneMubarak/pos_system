@@ -23,49 +23,45 @@ from .models import Sale  # Adjust this import based on your actual model locati
 @login_required
 @staff_user_required
 def dashboard_view(request):
-    current_datetime = datetime.now()
+    current_date = datetime.now().date()
     selected_interval = request.GET.get('time_interval')
 
-    # By default, set the interval's ending point to the current datetime
-    interval_end = current_datetime
+    # By default, set the interval's ending point to today's date
+    interval_end = current_date
 
     if selected_interval == 'weekly':
-        interval_start = current_datetime - timedelta(days=6)
+        interval_start = current_date - timedelta(days=6)
     elif selected_interval == 'monthly':
-        interval_start = current_datetime - timedelta(days=29)
+        interval_start = current_date - timedelta(days=29)
     elif selected_interval == 'yearly':
-        interval_start = current_datetime - timedelta(days=364)
+        interval_start = current_date - timedelta(days=364)
     else:
-        # Default to the last 24 hours if no or invalid parameter is provided
-        interval_start = current_datetime - timedelta(hours=24)
+        # Default to today's date if no or invalid parameter is provided
+        interval_start = current_date
 
-    category_count = Category.objects.count()
-    product_count = Product.objects.count()
-
-    # Use get_user_model() to reference your custom user model
-    user_count = get_user_model().objects.count()
-
-    # Aggregated stock from all products
-    aggregated_stock = Product.objects.aggregate(sum=models.Sum('stock'))['sum'] or 0
+    # Sales count and amount in the selected interval
     sales_count_in_interval = Sale.objects.filter(
-        date_added__range=(interval_start, interval_end)
+        date_added__date__range=(interval_start, interval_end)
     ).count()
     sales_amount_in_interval = Sale.objects.filter(
-        date_added__range=(interval_start, interval_end)
+        date_added__date__range=(interval_start, interval_end)
     ).aggregate(total_sales=Sum('grand_total'))['total_sales'] or 0
 
+    # Recent stock transactions in the selected interval
     recent_stock_transactions = StockTransaction.objects.select_related('product').filter(
-        date_added__range=(interval_start, interval_end)
+        date_added__date__range=(interval_start, interval_end)
     ).order_by('-date_added')[:5]
 
+    # Similar to sale_report_view, aggregate payment counts by payment type for sales in the interval
+    payment_counts = Sale.objects.filter(
+        date_added__date__range=(interval_start, interval_end)
+    ).values('payment_type__name').annotate(count=Count('payment_type'))
+
     context = {
-        'total_categories': category_count,
-        'total_products': product_count,
-        'total_stock': aggregated_stock,
-        'total_users': user_count,
         'sales_count_for_interval': sales_count_in_interval,
         'sales_amount_for_interval': sales_amount_in_interval,
         'recent_transactions': recent_stock_transactions,
+        'payment_counts': payment_counts,
         'time_interval': selected_interval or 'today',
     }
 
