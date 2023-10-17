@@ -14,7 +14,7 @@ import csv
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.db.models import Sum
+from django.db.models import  Sum, F, ExpressionWrapper, fields
 from django.core.paginator import Paginator
 from datetime import datetime
 from .models import Sale  # Adjust this import based on your actual model location
@@ -65,7 +65,14 @@ def dashboard_view(request):
     aggregated_stock = Product.objects.aggregate(sum=Sum('stock'))['sum'] or 0
 
     recent_stock_transactions = StockTransaction.objects.select_related('product').order_by('-date_added')[:5]
-    top_sellers = SaleItem.objects.values('product__id', 'product__name').annotate(total_qty=Sum('qty')).order_by('-total_qty')[:10]
+    top_sellers = SaleItem.objects.values('product__id', 'product__name') \
+                      .annotate(total_qty=Sum('qty'), total_sell_price=ExpressionWrapper(Sum(F('qty') * F('price')),
+                                                                                         output_field=fields.DecimalField())) \
+                      .order_by('-total_qty')[:10]
+
+    for rank, seller in enumerate(top_sellers, start=1):
+        seller['rank'] = rank
+
     for rank, seller in enumerate(top_sellers, start=1):
         seller['rank'] = rank
 
