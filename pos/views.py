@@ -65,6 +65,9 @@ def dashboard_view(request):
     aggregated_stock = Product.objects.aggregate(sum=Sum('stock'))['sum'] or 0
 
     recent_stock_transactions = StockTransaction.objects.select_related('product').order_by('-date_added')[:5]
+    top_sellers = SaleItem.objects.values('product__id', 'product__name').annotate(total_qty=Sum('qty')).order_by('-total_qty')[:10]
+    for rank, seller in enumerate(top_sellers, start=1):
+        seller['rank'] = rank
 
     context = {
         'total_categories': category_count,
@@ -75,6 +78,7 @@ def dashboard_view(request):
         'sales_amount_for_interval': sales_amount_in_interval,
         'recent_transactions': recent_stock_transactions,
         'time_interval': selected_interval or 'today',
+        'top_sellers': top_sellers
     }
 
     return render(request, 'pos/dashboard.html', context)
