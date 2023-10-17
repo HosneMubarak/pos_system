@@ -798,7 +798,7 @@ def sale_report_view(request):
         for sale in sales:
             csv_writer.writerow([
                 sale.code,
-                sale.date_added.strftime('%Y-%m-%d %H:%M:%S'),
+                sale.date_added.strftime('%b. %d, %Y, %I:%M %p'),  # Format the date_added attribute
                 sale.payment_type.name,
                 sale.sub_total,
                 sale.grand_total,
