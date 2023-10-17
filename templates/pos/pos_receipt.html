@@ -146,7 +146,7 @@
         <div class="info">
             <h1>ELUXGO EMPIRE</h1>
             <p>KSL CITY MALL, Malaysia</p>
-            <p>Date: {{ sale.date_added|date:"Y-m-d H:i:s" }}</p>
+            <p>Date: {{ sale.date_added }}</p>
             <p>Order #: {{ sale.code }}</p>
             <p>Cashier: {{ sale.created_by.username }}</p>
             <p>Payment Type: {{ sale.payment_type }}</p>
