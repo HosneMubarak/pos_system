@@ -29,7 +29,7 @@ class Category(BaseUserTrackModel):
         return self.name
 
     class Meta:
-        ordering = ['date_updated']
+        ordering = ['-date_updated']
 
 
 class Product(BaseUserTrackModel):
@@ -46,7 +46,7 @@ class Product(BaseUserTrackModel):
         return f"{self.code} - {self.name}"
 
     class Meta:
-        ordering = ['date_updated']
+        ordering = ['-date_updated']
 
 
 class PaymentType(models.Model):
@@ -90,7 +90,7 @@ class Sale(BaseUserTrackModel):
         super(Sale, self).save(*args, **kwargs)
 
     class Meta:
-        ordering = ['date_updated']
+        ordering = ['-date_updated']
 
 
 class SaleItem(BaseUserTrackModel):
@@ -101,7 +101,7 @@ class SaleItem(BaseUserTrackModel):
     total = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
     class Meta:
-        ordering = ['date_updated']
+        ordering = ['-date_updated']
         verbose_name_plural = "Sale Items"
 
     def save(self, *args, **kwargs):
@@ -132,7 +132,7 @@ class StockTransaction(BaseUserTrackModel):
     note = models.TextField(null=True, blank=True)  # Optional note for any additional information
 
     class Meta:
-        ordering = ['date_updated']
+        ordering = ['-date_updated']
 
     def save(self, *args, **kwargs):
         # Adjust the stock level in the Product model based on the transaction type.
