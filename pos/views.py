@@ -752,8 +752,11 @@ def sale_report_view(request):
     total_sale_price = sales.aggregate(Sum('grand_total'))['grand_total__sum']
     total_sale_count = sales.count()
 
-    # Aggregate payment counts by payment type
-    payment_counts = sales.values('payment_type__name').annotate(count=Count('payment_type'))
+    # Aggregate payment counts by payment type, including total sale price per payment type
+    payment_counts = sales.values('payment_type__name').annotate(
+        count=Count('payment_type'),
+        total_price=Sum('grand_total')
+    )
 
     # Number of sales to display per page
     per_page = 10
@@ -798,10 +801,14 @@ def sale_report_view(request):
         csv_writer.writerow(['Total Sale Price:', total_sale_price])
         csv_writer.writerow([])  # Add an empty row for better readability
 
-        # Write payment counts
-        csv_writer.writerow(['Payment Type', 'Payment Count'])
+        # Write payment counts, including total price
+        csv_writer.writerow(['Payment Type', 'Payment Count', 'Total Sale'])
         for payment_count in payment_counts:
-            csv_writer.writerow([payment_count['payment_type__name'], payment_count['count']])
+            csv_writer.writerow([
+                payment_count['payment_type__name'],
+                payment_count['count'],
+                payment_count['total_price']
+            ])
         csv_writer.writerow([])  # Add an empty row for better readability
 
         # Write the header row
