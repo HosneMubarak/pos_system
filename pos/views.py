@@ -100,7 +100,7 @@ def category_list_view(request):
     # Sorting
     sort_by = request.GET.get('sort_by', 'date_updated')  # Default sorting by date_updated
     if sort_by not in ['name', 'description', 'status', 'date_updated']:
-        sort_by = 'date_updated'  # Default to date_updated if invalid sort criteria
+        sort_by = '-date_updated'  # Default to date_updated if invalid sort criteria
     categories = categories.order_by(sort_by)
 
     # Search
@@ -205,7 +205,7 @@ def product_list_view(request):
     sort_by = request.GET.get('sort_by', 'date_updated')  # Default sorting by date_updated
     if sort_by not in ['code', 'category', 'name', 'description', 'stock', 'buy_price', 'sell_price', 'status',
                        'date_updated']:
-        sort_by = 'date_updated'  # Default to date_updated if invalid sort criteria
+        sort_by = '-date_updated'  # Default to date_updated if invalid sort criteria
     products = products.order_by(sort_by)
 
     # Search
@@ -315,7 +315,7 @@ def stock_list_view(request):
     # Sorting
     sort_by = request.GET.get('sort_by', 'date_updated')  # Default sorting by date_updated
     if sort_by not in ['product', 'transaction_type', 'quantity', 'note', 'date_updated']:
-        sort_by = 'date_updated'  # Default to date_updated if invalid sort criteria
+        sort_by = '-date_updated'  # Default to date_updated if invalid sort criteria
     stocks = stocks.order_by(sort_by)
 
     # Search
